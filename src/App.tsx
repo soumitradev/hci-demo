@@ -17,6 +17,9 @@ import { useFinanceStore } from './stores/financeStore';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fitnessStats } from './data/fitnessData';
+import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import { Button } from "./components/ui/button";
+import { Progress } from "./components/ui/progress";
 
 function Home() {
   const navigate = useNavigate();
@@ -47,96 +50,142 @@ function Home() {
   const averageProgress = Math.round(totalProgress / Object.keys(courses).length);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      <main className="container mx-auto px-4 py-4">
-        <h1 className="text-6xl font-bold text-gray-900 mb-2 mt-4">Lex</h1>
+    <div className="min-h-screen bg-background pb-16">
+      <main className="container mx-auto px-4 py-6">
+        <h1 className="text-5xl font-extrabold text-foreground mb-8">Lex</h1>
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Welcome back!</h2>
-          <p className="text-gray-600 mt-1">Here's your progress for today</p>
+          <h2 className="text-2xl font-semibold text-foreground">Welcome back!</h2>
+          <p className="text-sm text-muted-foreground">Here's your progress for today</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           {/* Fitness and Academic Progress */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* Fitness Widget - Already a donut chart */}
-            <div className="col-span-1">
-              <FitnessWidget steps={currentSteps} goal={stepsGoal} />
-            </div>
+          <div className="grid grid-cols-2 gap-2">
+            {/* Fitness Widget */}
+            <Card 
+              className="col-span-1 cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => navigate('/fitness')}
+            >
+              <CardContent className="p-4 flex flex-col gap-2">
+                <h3 className="text-base font-medium">Fitness</h3>
+                <div className="relative w-24 h-24 mx-auto">
+                  <svg className="w-full h-full" viewBox="0 0 36 36">
+                    <path
+                      d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="hsl(var(--muted))"
+                      strokeWidth="3"
+                    />
+                    <path
+                      d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="3"
+                      strokeDasharray={`${(currentSteps / stepsGoal) * 100}, 100`}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-xl font-semibold">{Math.round((currentSteps / stepsGoal) * 100)}%</span>
+                    <span className="text-sm text-muted-foreground">Steps</span>
+                  </div>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="w-full h-6 text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center px-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/fitness');
+                  }}
+                >
+                  View All
+                  <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
 
             {/* Academic Progress */}
-            <div 
-              className="col-span-1 bg-white rounded-xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+            <Card 
+              className="col-span-1 cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => navigate('/academics')}
             >
-              <div className="relative w-24 h-24 mx-auto mb-2">
-                <svg className="w-full h-full" viewBox="0 0 36 36">
-                  <path
-                    d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="#E2E8F0"
-                    strokeWidth="3"
-                  />
-                  <path
-                    d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="#9333EA"
-                    strokeWidth="3"
-                    strokeDasharray={`${averageProgress}, 100`}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-lg font-semibold text-gray-900">{averageProgress}%</span>
+              <CardContent className="p-4 flex flex-col gap-2">
+                <h3 className="text-base font-medium">Academic Progress</h3>
+                <div className="relative w-24 h-24 mx-auto">
+                  <svg className="w-full h-full" viewBox="0 0 36 36">
+                    <path
+                      d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="hsl(var(--muted))"
+                      strokeWidth="3"
+                    />
+                    <path
+                      d="M18 2.0845
+                        a 15.9155 15.9155 0 0 1 0 31.831
+                        a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="3"
+                      strokeDasharray={`${averageProgress}, 100`}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-xl font-semibold">{averageProgress}%</span>
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-sm font-medium text-gray-800 text-center">Academic Progress</h3>
-              <button 
-                className="mt-2 text-xs text-gray-600 hover:text-gray-900 inline-flex items-center gap-1 mx-auto block"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate('/academics');
-                }}
-              >
-                View All
-                <ArrowRight className="w-3 h-3" />
-              </button>
-            </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="w-full h-6 text-sm text-muted-foreground hover:text-foreground inline-flex items-center justify-center px-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/academics');
+                  }}
+                >
+                  View All
+                  <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Monthly Spending */}
-          <div 
-            className="bg-white rounded-xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+          <Card 
+            className="cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => navigate('/finance')}
           >
-            <div className="flex items-center justify-between">
+            <CardContent className="p-4 flex justify-between items-center">
               <div className="flex flex-col">
-                <h2 className="text-lg font-semibold text-gray-800 mb-1">Monthly Spending</h2>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-lg font-medium text-gray-900">₹{currentMonthSpending.toLocaleString()}</span>
-                  <span className="text-sm text-gray-500">/ ₹{totalBudget.toLocaleString()}</span>
+                <h3 className="text-base font-medium">Monthly Spending</h3>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-lg font-medium">₹{currentMonthSpending.toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground">/ ₹{totalBudget.toLocaleString()}</span>
                 </div>
-                <button 
-                  className="mt-2 text-sm text-gray-600 hover:text-gray-900 inline-flex items-center gap-1"
+                <div 
+                  className="flex items-center mt-1 text-sm text-muted-foreground hover:text-foreground cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate('/finance');
                   }}
                 >
                   View All
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                  <ArrowRight className="w-3 h-3 ml-1" />
+                </div>
               </div>
-              <div className="relative w-20 h-20">
+              <div className="relative w-24 h-24">
                 <svg className="w-full h-full" viewBox="0 0 36 36">
                   <path
                     d="M18 2.0845
                       a 15.9155 15.9155 0 0 1 0 31.831
                       a 15.9155 15.9155 0 0 1 0 -31.831"
                     fill="none"
-                    stroke="#E2E8F0"
+                    stroke="hsl(var(--muted))"
                     strokeWidth="3"
                   />
                   <path
@@ -144,60 +193,67 @@ function Home() {
                       a 15.9155 15.9155 0 0 1 0 31.831
                       a 15.9155 15.9155 0 0 1 0 -31.831"
                     fill="none"
-                    stroke="#9333EA"
+                    stroke="hsl(var(--primary))"
                     strokeWidth="3"
                     strokeDasharray={`${(currentMonthSpending / totalBudget) * 100}, 100`}
                   />
                 </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-base font-semibold">{Math.round((currentMonthSpending / totalBudget) * 100)}%</span>
+                </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Today's Schedule */}
-          <div 
-            className="md:col-span-2 bg-white rounded-xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+          <Card 
+            className="md:col-span-2 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => navigate('/timetable')}
           >
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-lg font-semibold text-gray-800">Today's Schedule</h2>
-              <button 
-                className="text-sm text-gray-600 hover:text-gray-900 inline-flex items-center gap-1"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate('/timetable');
-                }}
-              >
-                View All
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-            {todayEvents.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {todayEvents.map(event => (
-                  <div key={event.id} className="flex items-center gap-3">
-                    <div className="w-16 text-sm font-medium text-gray-900">{event.startTime}</div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">{event.title}</p>
-                      <p className="text-sm text-gray-500">{event.location}</p>
-                    </div>
-                  </div>
-                ))}
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between -mt-1.5">
+                <h3 className="text-base font-medium">Today's Schedule</h3>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-6 text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1 px-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate('/timetable');
+                  }}
+                >
+                  View All
+                  <ArrowRight className="w-3 h-3" />
+                </Button>
               </div>
-            ) : (
-              <p className="text-sm text-gray-500">No more classes for today</p>
-            )}
-          </div>
+              {todayEvents.length > 0 ? (
+                <div className="space-y-2 mt-1">
+                  {todayEvents.map(event => (
+                    <div key={event.id} className="flex items-center gap-4">
+                      <div className="w-12 text-base font-medium">{event.startTime}</div>
+                      <div className="flex-1">
+                        <p className="text-base font-medium">{event.title}</p>
+                        <p className="text-sm text-muted-foreground -mt-0.5">{event.location}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground mt-1">No more classes for today</p>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Leaderboard Position */}
-          <div 
-            className="md:col-span-2 bg-orange-400 rounded-xl p-4 text-white shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+          <Card 
+            className="md:col-span-2 bg-primary text-primary-foreground cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => navigate('/leaderboard')}
           >
-            <div className="flex items-center gap-3">
-              <span className="font-semibold text-lg">#4</span>
-              <p className="font-medium">You are doing better than 93% of other students!</p>
-            </div>
-          </div>
+            <CardContent className="flex items-center gap-4 p-4">
+              <span className="font-semibold text-base -mt-0.5">#4</span>
+              <p className="font-medium text-sm -mt-0.5">You are doing better than 93% of other students!</p>
+            </CardContent>
+          </Card>
         </div>
       </main>
 

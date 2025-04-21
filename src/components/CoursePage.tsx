@@ -5,6 +5,7 @@ import { useState, useRef, useMemo } from 'react'
 import AddAssessmentModal from './AddAssessmentModal'
 import AssessmentMenu from './AssessmentMenu'
 import { formatDate, parseDate, calculateCourseProgress } from '../lib/utils'
+import { Progress } from './ui/progress'
 
 interface Assessment {
   type: string
@@ -53,18 +54,39 @@ export default function CoursePage({
     }))
     .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime())
 
+    // Calculate progress based on completed assessments
+    const completedCount = processed.filter(a => a.isPast).length
+    const totalCount = processed.length
+    const progressValue = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
+
     return {
       sortedAssessments: processed,
       hasUpcoming: processed.some(a => !a.isPast),
-      progress: calculateCourseProgress(assessments)
+      progress: progressValue
     }
   }, [assessments])
 
-  // Calculate color based on days left
   const getAssessmentColor = (days: number) => {
-    if (days <= 7) return 'text-red-500'
-    if (days <= 15) return 'text-amber-500' 
-    return 'text-gray-600'
+    if (days < 0) return 'text-muted-foreground'
+    if (days === 0) return 'text-destructive'
+    if (days <= 7) return 'text-destructive'
+    if (days <= 15) return 'text-warning'
+    return 'text-muted-foreground'
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false)
+    setSelectedAssessment(null)
+  }
+
+  const handleAddClick = () => {
+    setSelectedAssessment(null)
+    setIsModalOpen(true)
+  }
+
+  const handleEditClick = (assessment: Assessment) => {
+    setSelectedAssessment(assessment)
+    setIsModalOpen(true)
   }
 
   const handleAddAssessment = (newAssessment: Assessment) => {
@@ -96,140 +118,133 @@ export default function CoursePage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      {/* Course Header */}
-      <div className="space-y-4">
-        <button 
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-900 hover:text-purple-600 transition-colors mb-4"
+    <div className="min-h-screen bg-background p-4">
+      <div className="max-w-3xl mx-auto">
+        <button
+          onClick={() => navigate('/academics')}
+          className="flex items-center gap-2 text-foreground hover:text-primary transition-colors mb-4"
         >
-          <ArrowLeft className="h-5 w-5" />
-          <span className="text-xl font-medium">{courseCode}</span>
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Academics</span>
         </button>
-        <h2 className="text-2xl text-gray-900">{courseName}</h2>
-      </div>
 
-      {/* Important Dates Section */}
-      <div className="mt-8 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Important Dates</h3>
-          <button 
-            onClick={() => {
-              setSelectedAssessment(null)
-              setIsModalOpen(true)
-            }}
-            className="text-gray-900 hover:text-purple-600 transition-colors"
-          >
-            <CirclePlus className="h-5 w-5" />
-          </button>
-        </div>
-        
-        <div className="space-y-3">
-          {!hasUpcoming && (
-            <p className="text-sm text-gray-500 italic">No upcoming assessments</p>
-          )}
-          
-          {sortedAssessments.map((assessment, index) => {
-            const isNextAssessment = nextAssessment?.type === assessment.type
-            return (
-              <div 
-                key={index} 
-                className="flex items-center justify-between"
+        <h2 className="text-2xl text-foreground">{courseName}</h2>
+        <p className="text-sm text-muted-foreground mb-6">{courseCode}</p>
+
+        <div className="space-y-8">
+          {/* Important Dates Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-foreground">Important Dates</h3>
+              <button
+                onClick={handleAddClick}
+                className="text-foreground hover:text-primary transition-colors"
               >
-                <span className={`${assessment.isPast ? 'text-gray-500' : 'text-gray-900'}`}>
-                  {assessment.type}
-                </span>
-                <div className="flex items-center gap-4">
-                  <span className={`${
-                    isNextAssessment 
-                      ? getAssessmentColor(nextAssessment.daysLeft) 
-                      : assessment.isPast 
-                        ? 'text-gray-500' 
-                        : 'text-gray-600'
-                  }`}>
-                    {formatDate(assessment.date)}
-                  </span>
-                  <button 
-                    ref={menuState.index === index ? menuButtonRef : null}
-                    onClick={(e) => {
-                      const button = e.currentTarget
-                      setMenuState({ isOpen: true, index })
-                      // Update the ref to point to the clicked button
-                      if (menuButtonRef.current !== button) {
-                        menuButtonRef.current = button
-                      }
-                    }}
-                    className="text-gray-900 hover:text-purple-600 transition-colors"
-                  >
-                    <MoreVertical className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* Links Section */}
-      <div className="mt-8 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Links</h3>
-          <button className="text-gray-900 hover:text-purple-600 transition-colors">
-            <CirclePlus className="h-5 w-5" />
-          </button>
-        </div>
-        
-        <div className="space-y-3">
-          {links.map((link, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <span className="text-gray-900">{link.title}</span>
-              <div className="flex items-center gap-4">
-                <span className="text-gray-600">...</span>
-                <button className="text-gray-900 hover:text-purple-600 transition-colors">
-                  <MoreVertical className="h-5 w-5" />
-                </button>
-              </div>
+                <CirclePlus className="w-5 h-5" />
+              </button>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Progress Section */}
-      <div className="mt-8 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Progress</h3>
-          <span className="text-sm text-gray-600">{progress}%</span>
-        </div>
-        <div className="relative h-2">
-          <div className="absolute inset-0 rounded-full bg-purple-100">
-            <div 
-              className="h-full rounded-full bg-purple-600 transition-all duration-500 ease-in-out"
-              style={{ width: `${progress}%` }}
-            />
+            {sortedAssessments.length > 0 ? (
+              <div className="space-y-3">
+                {sortedAssessments.map((assessment, index) => {
+                  const days = Math.ceil(
+                    (parseDate(assessment.date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+                  )
+                  return (
+                    <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg">
+                      <div>
+                        <span className={`${assessment.isPast ? 'text-muted-foreground' : 'text-foreground'}`}>
+                          {assessment.type}
+                        </span>
+                        <p className="text-sm text-muted-foreground">
+                          {formatDate(assessment.date)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={getAssessmentColor(days)}>
+                          {days < 0 ? 'Past' : days === 0 ? 'Today' : `${days} days left`}
+                        </span>
+                        <div className="relative inline-block">
+                          <button
+                            ref={menuButtonRef}
+                            onClick={() => setMenuState({ isOpen: !menuState.isOpen, index })}
+                            className="p-1 hover:bg-accent rounded-full"
+                          >
+                            <MoreVertical className="w-4 h-4 text-foreground" />
+                          </button>
+                          {menuState.isOpen && menuState.index === index && (
+                            <div className="absolute right-0 mt-1 z-50">
+                              <AssessmentMenu
+                                isOpen={true}
+                                onClose={() => setMenuState({ isOpen: false, index: -1 })}
+                                onEdit={() => {
+                                  handleEditClick(assessment)
+                                  setMenuState({ isOpen: false, index: -1 })
+                                }}
+                                onDelete={() => {
+                                  handleDeleteAssessment()
+                                  setMenuState({ isOpen: false, index: -1 })
+                                }}
+                                buttonRef={menuButtonRef}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">No upcoming assessments</p>
+            )}
+          </div>
+
+          {/* Links Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-foreground">Links</h3>
+              <button className="text-foreground hover:text-primary transition-colors">
+                <CirclePlus className="w-5 h-5" />
+              </button>
+            </div>
+
+            {links.length > 0 ? (
+              <div className="space-y-3">
+                {links.map((link, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg">
+                    <span className="text-foreground">{link.title}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">...</span>
+                      <button className="text-foreground hover:text-primary transition-colors">
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">No links available</p>
+            )}
+          </div>
+
+          {/* Progress Section */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-foreground">Progress</h3>
+              <span className="text-sm text-muted-foreground">{progress}%</span>
+            </div>
+            <Progress value={progress} className="h-2" />
           </div>
         </div>
       </div>
 
-      <AddAssessmentModal 
+      <AddAssessmentModal
         isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false)
-          setSelectedAssessment(null)
-        }}
+        onClose={handleModalClose}
         onAdd={handleAddAssessment}
         onEdit={handleEditAssessment}
         initialAssessment={selectedAssessment || undefined}
-      />
-
-      <AssessmentMenu
-        isOpen={menuState.isOpen}
-        onClose={() => setMenuState({ isOpen: false, index: -1 })}
-        onEdit={() => {
-          setSelectedAssessment(assessments[menuState.index])
-          setIsModalOpen(true)
-        }}
-        onDelete={handleDeleteAssessment}
-        buttonRef={menuButtonRef}
       />
     </div>
   )

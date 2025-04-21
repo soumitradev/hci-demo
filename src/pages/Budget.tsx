@@ -3,13 +3,41 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, AlertCircle, ArrowLeft, Pencil } from 'lucide-react';
 import { useFinanceStore, Category } from '../stores/financeStore';
 import EditBudgetModal from '../components/EditBudgetModal';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { Progress } from '../components/ui/progress';
 
-const categoryColors: Record<Category, { bg: string, dot: string }> = {
-  'Food': { bg: 'bg-amber-100', dot: 'bg-amber-500' },
-  'Entertainment': { bg: 'bg-purple-100', dot: 'bg-purple-500' },
-  'Shopping': { bg: 'bg-blue-100', dot: 'bg-blue-500' },
-  'Transport': { bg: 'bg-green-100', dot: 'bg-green-500' },
-  'Others': { bg: 'bg-gray-100', dot: 'bg-gray-500' }
+const categoryColors: Record<Category, { bg: string, dot: string, text: string, progress: string }> = {
+  'Food': { 
+    bg: 'bg-red-100 dark:bg-red-900/20', 
+    dot: 'bg-red-500 dark:bg-red-400',
+    text: 'text-red-500 dark:text-red-400',
+    progress: '[&>div]:bg-red-500 dark:[&>div]:bg-red-400'
+  },
+  'Entertainment': { 
+    bg: 'bg-purple-100 dark:bg-purple-900/20', 
+    dot: 'bg-purple-500 dark:bg-purple-400',
+    text: 'text-purple-500 dark:text-purple-400',
+    progress: '[&>div]:bg-purple-500 dark:[&>div]:bg-purple-400'
+  },
+  'Shopping': { 
+    bg: 'bg-amber-100 dark:bg-amber-900/20', 
+    dot: 'bg-amber-500 dark:bg-amber-400',
+    text: 'text-amber-500 dark:text-amber-400',
+    progress: '[&>div]:bg-amber-500 dark:[&>div]:bg-amber-400'
+  },
+  'Transport': { 
+    bg: 'bg-blue-100 dark:bg-blue-900/20', 
+    dot: 'bg-blue-500 dark:bg-blue-400',
+    text: 'text-blue-500 dark:text-blue-400',
+    progress: '[&>div]:bg-blue-500 dark:[&>div]:bg-blue-400'
+  },
+  'Others': { 
+    bg: 'bg-slate-100 dark:bg-slate-900/20', 
+    dot: 'bg-slate-500 dark:bg-slate-400',
+    text: 'text-slate-500 dark:text-slate-400',
+    progress: '[&>div]:bg-slate-500 dark:[&>div]:bg-slate-400'
+  }
 };
 
 export default function Budget() {
@@ -55,13 +83,15 @@ export default function Budget() {
     <div className="min-h-screen bg-white pb-20">
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         <div className="flex items-center gap-2 mb-8">
-          <button 
+          <Button 
             onClick={() => navigate('/finance')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <h1 className="text-4xl font-bold text-gray-900">Finances</h1>
+            <ChevronLeft className="h-7 w-7" />
+          </Button>
+          <h1 className="text-4xl font-bold text-foreground">Budget</h1>
         </div>
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Budget</h2>
 
@@ -69,14 +99,14 @@ export default function Budget() {
         <div className="flex items-center justify-between mb-8">
           <button 
             onClick={prevMonth}
-            className="p-2 text-[#7F3DFF] hover:bg-purple-50 rounded-full transition-colors"
+            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
-          <span className="text-lg text-[#7F3DFF] font-medium">{monthName}</span>
+          <span className="text-lg text-primary font-medium">{monthName}</span>
           <button 
             onClick={nextMonth}
-            className="p-2 text-[#7F3DFF] hover:bg-purple-50 rounded-full transition-colors"
+            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors"
           >
             <ChevronRight className="w-6 h-6" />
           </button>
@@ -102,7 +132,7 @@ export default function Budget() {
                   )}
                   <button 
                     onClick={() => handleEditBudget(category as Category)} 
-                    className="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors"
+                    className="p-2 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
                   >
                     <Pencil className="h-5 w-5" />
                   </button>
@@ -114,14 +144,10 @@ export default function Budget() {
                   </h3>
 
                   {/* Progress Bar */}
-                  <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className={`absolute left-0 top-0 h-full rounded-full transition-all duration-300 ${
-                        isOverBudget ? 'bg-red-500' : categoryColors[category as Category].dot
-                      }`}
-                      style={{ width: `${Math.min(100, progress)}%` }}
-                    />
-                  </div>
+                  <Progress 
+                    value={Math.min(100, progress)}
+                    className={`${isOverBudget ? 'bg-red-200' : categoryColors[category as Category].bg} ${isOverBudget ? '[&>div]:bg-red-500' : categoryColors[category as Category].progress}`}
+                  />
 
                   <div className="text-sm text-gray-500">
                     ₹{spent.toLocaleString()} of ₹{budget.toLocaleString()}

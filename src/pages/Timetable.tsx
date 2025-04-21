@@ -3,6 +3,7 @@ import { Plus, ChevronLeft } from "lucide-react";
 import { useTimetableStore, Event } from "../stores/timetableStore";
 import { useNavigate } from 'react-router-dom';
 import AddEventModal from "../components/AddEventModal";
+import { Button } from "../components/ui/button";
 
 // Helper function to convert time string to minutes since start of day
 const timeToMinutes = (time: string) => {
@@ -45,6 +46,37 @@ const groupOverlappingEvents = (events: Event[]) => {
   });
 
   return groups;
+};
+
+const earliestHour = 8; // 8 AM
+const latestHour = 20; // 8 PM
+
+const calculateEventPosition = (event: Event) => {
+  const [startHours, startMinutes] = event.startTime.split(':').map(Number);
+  const [endHours, endMinutes] = event.endTime.split(':').map(Number);
+  
+  const startInMinutes = startHours * 60 + startMinutes;
+  const endInMinutes = endHours * 60 + endMinutes;
+  const durationInMinutes = endInMinutes - startInMinutes;
+  
+  const startHour = startHours - earliestHour;
+  const top = (startHour * 64) + (startMinutes / 60 * 64);
+  const height = (durationInMinutes / 60) * 64;
+
+  return { top, height };
+};
+
+const getCategoryColor = (category: string) => {
+  switch (category) {
+    case 'CS F213':
+      return 'rgb(var(--blue-500))'; // blue-500
+    case 'CS F214':
+      return 'rgb(var(--emerald-500))'; // emerald-500
+    case 'CS F222':
+      return 'rgb(var(--violet-500))'; // violet-500
+    default:
+      return 'rgb(var(--gray-500))'; // gray-500
+  }
 };
 
 export default function TimetablePage() {
@@ -119,39 +151,39 @@ export default function TimetablePage() {
   const showTimeIndicator = hours >= earliestHour && hours <= latestHour;
 
   return (
-    <main className="flex flex-col h-screen bg-gray-50">
-      <div className="flex-none p-4 bg-white shadow-sm">
+    <main className="flex flex-col h-screen bg-background">
+      <div className="flex-none p-4 bg-background shadow-sm">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <button 
-                onClick={() => navigate('/academics')}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              <Button 
+                onClick={() => navigate(-1)}
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
               >
-                <ChevronLeft size={24} />
-              </button>
-              <h1 className="text-2xl font-bold text-[#0F172A]">Timetable</h1>
+                <ChevronLeft className="h-7 w-7" />
+              </Button>
+              <h1 className="text-2xl font-bold text-foreground">Timetable</h1>
             </div>
-            <button 
+            <Button 
               onClick={() => setIsAddModalOpen(true)}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              variant="ghost"
+              size="icon"
             >
-              <Plus size={28} />
-            </button>
+              <Plus className="h-6 w-6" />
+            </Button>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4">
             {availableCategories.map(category => (
-              <button
+              <Button
                 key={category}
                 onClick={() => toggleCategory(category)}
-                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
-                  selectedCategories.has(category)
-                    ? "bg-[#0F172A] text-white"
-                    : "bg-gray-100 text-gray-600"
-                }`}
+                variant={selectedCategories.has(category) ? "secondary" : "ghost"}
+                className="whitespace-nowrap"
               >
                 {category}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -169,19 +201,19 @@ export default function TimetablePage() {
             >
               <div className="flex items-center">
                 <div className="w-16 relative">
-                  <span className="absolute right-1 -translate-y-1/2 text-xs font-medium text-red-600 bg-white pl-2 pr-1">{formattedTime}</span>
+                  <span className="absolute right-1 -translate-y-1/2 text-xs font-medium text-destructive bg-background pl-2 pr-1">{formattedTime}</span>
                 </div>
-                <div className="flex-1 h-0.5 bg-red-600"></div>
+                <div className="flex-1 h-0.5 bg-destructive"></div>
               </div>
             </div>
           )}
 
           {/* Time slots */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 flex flex-col bg-white z-10">
+          <div className="absolute left-0 top-0 bottom-0 w-16 flex flex-col bg-background z-10">
             {timeSlots.map((time, i) => (
-              <div key={i} className="h-16 border-b border-gray-200">
+              <div key={i} className="h-16 border-b border-border">
                 <div className="h-full flex items-start pt-0 px-4">
-                  <span className="text-[10px] text-[#0F172A] whitespace-nowrap">{time}</span>
+                  <span className="text-[10px] text-muted-foreground whitespace-nowrap">{time}</span>
                 </div>
               </div>
             ))}
@@ -192,50 +224,60 @@ export default function TimetablePage() {
             {/* Hour grid lines */}
             <div className="relative">
               {timeSlots.map((_, i) => (
-                <div key={i} className="h-16 border-b border-gray-200" />
+                <div key={i} className="h-16 border-b border-border" />
               ))}
 
               {/* Events */}
-              <div className="absolute inset-0 px-1">
-                {eventGroups.map((group, _) => 
-                  group.map((event, eventIndex) => {
-                    // Convert event time to pixels (assuming 1 hour = 64px)
-                    const [startHours, startMinutes] = event.startTime.split(':').map(Number);
-                    const [endHours, endMinutes] = event.endTime.split(':').map(Number);
-                    
-                    const startInMinutes = startHours * 60 + startMinutes;
-                    const endInMinutes = endHours * 60 + endMinutes;
-                    const durationInMinutes = endInMinutes - startInMinutes;
-                    
-                    const startHour = startHours - earliestHour;
-                    const top = (startHour * 64) + (startMinutes / 60 * 64);
-                    const height = (durationInMinutes / 60) * 64;
-
-                    // Calculate width and position based on group size with smaller gap
-                    const gap = 4; // 4px gap between events
-                    const totalGaps = group.length - 1;
-                    const width = `calc((100% - ${gap * totalGaps}px) / ${group.length})`;
-                    const left = `calc(${eventIndex} * (100% / ${group.length}) + ${gap * eventIndex}px)`;
-
-                    return (
-                      <div
-                        key={event.id}
-                        className="absolute rounded-lg p-2"
-                        style={{
-                          left,
-                          top: `${top}px`,
-                          width,
-                          height: `${height}px`,
-                          backgroundColor: event.color,
-                          color: event.color === "#91DE43" ? "#0F172A" : "white"
-                        }}
-                      >
-                        <div className="text-sm font-medium truncate">{event.title}</div>
-                        <div className="text-sm opacity-75 truncate">{event.location}</div>
-                      </div>
-                    );
-                  })
-                )}
+              <div className="absolute inset-0">
+                {eventGroups.map((group, groupIndex) => (
+                  <div key={groupIndex} className="relative">
+                    {group.map((event, eventIndex) => {
+                      const { top, height } = calculateEventPosition(event);
+                      const width = 100 / group.length;
+                      const left = (eventIndex * width);
+                      
+                      let bgColorClass = "bg-orange-500";
+                      switch (event.category) {
+                        case 'CS F213':
+                          bgColorClass = "bg-blue-500";
+                          break;
+                        case 'CS F214':
+                          bgColorClass = "bg-emerald-500";
+                          break;
+                        case 'CS F222':
+                          bgColorClass = "bg-violet-500";
+                          break;
+                      }
+                      
+                      return (
+                        <div
+                          key={`${groupIndex}-${eventIndex}`}
+                          className="absolute px-0.5"
+                          style={{ 
+                            top: `${top}px`,
+                            left: `${left}%`,
+                            width: `${width}%`,
+                            padding: '1px'
+                          }}
+                        >
+                          <div
+                            className={`rounded-lg p-2 shadow-sm ${bgColorClass}`}
+                            style={{
+                              height: `${height - 4}px`,
+                              opacity: 0.9,
+                              margin: '1px'
+                            }}
+                          >
+                            <div className="h-full flex flex-col">
+                              <h3 className="font-medium text-sm text-white line-clamp-1">{event.title}</h3>
+                              <p className="text-xs text-white/90">{event.location}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
             </div>
           </div>

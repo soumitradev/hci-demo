@@ -33,26 +33,17 @@ export default function AssessmentMenu({ isOpen, onClose, onEdit, onDelete, butt
 
   if (!isOpen) return null
 
-  // Position the menu relative to the button
-  const buttonRect = buttonRef.current?.getBoundingClientRect()
-  const menuStyle = buttonRect ? {
-    position: 'fixed' as const,
-    top: `${buttonRect.bottom + 5}px`,
-    right: `${window.innerWidth - buttonRect.right}px`,
-  } : {}
-
   return (
     <div 
       ref={menuRef}
-      className="bg-white rounded-lg shadow-lg py-1 w-32 z-50"
-      style={menuStyle}
+      className="bg-popover text-popover-foreground rounded-md border shadow-md py-1 w-32"
     >
       <button
         onClick={() => {
           onEdit()
           onClose()
         }}
-        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+        className="w-full px-4 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
       >
         Edit
       </button>
@@ -61,7 +52,7 @@ export default function AssessmentMenu({ isOpen, onClose, onEdit, onDelete, butt
           onDelete()
           onClose()
         }}
-        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-100"
+        className="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-accent hover:text-destructive"
       >
         Delete
       </button>

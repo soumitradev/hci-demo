@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
 import { ArrowRight } from 'lucide-react';
 
 interface FitnessWidgetProps {
@@ -8,15 +10,17 @@ interface FitnessWidgetProps {
 
 export default function FitnessWidget({ steps, goal }: FitnessWidgetProps) {
   const navigate = useNavigate();
-  const progress = Math.round((steps / goal) * 100);
+  const progress = Math.min(Math.round((steps / goal) * 100), 100);
 
   return (
-    <div 
-      className="bg-white rounded-xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+    <Card 
+      className="cursor-pointer hover:shadow-md transition-shadow"
       onClick={() => navigate('/fitness')}
     >
-      <h2 className="text-base font-medium text-gray-900">Fitness</h2>
-      <div className="flex flex-col items-center mt-2">
+      <CardHeader className="p-4 pb-0">
+        <CardTitle className="text-lg font-semibold">Fitness</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-center p-4">
         <div className="relative w-24 h-24">
           <svg className="w-full h-full" viewBox="0 0 36 36">
             <path
@@ -24,7 +28,7 @@ export default function FitnessWidget({ steps, goal }: FitnessWidgetProps) {
                 a 15.9155 15.9155 0 0 1 0 31.831
                 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
-              stroke="#E2E8F0"
+              stroke="hsl(var(--muted))"
               strokeWidth="3"
             />
             <path
@@ -32,18 +36,20 @@ export default function FitnessWidget({ steps, goal }: FitnessWidgetProps) {
                 a 15.9155 15.9155 0 0 1 0 31.831
                 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
-              stroke="#9333EA"
+              stroke="hsl(var(--primary))"
               strokeWidth="3"
               strokeDasharray={`${progress}, 100`}
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-base font-medium text-gray-900">{progress}%</span>
-            <span className="text-xs text-gray-500 mt-0.5">Steps</span>
+            <span className="text-2xl font-semibold text-foreground">{progress}%</span>
+            <span className="text-xs text-muted-foreground">Steps</span>
           </div>
         </div>
-        <button 
-          className="mt-3 text-xs text-gray-600 hover:text-gray-900 inline-flex items-center gap-1"
+        <Button 
+          variant="ghost" 
+          size="sm"
+          className="mt-2 text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
           onClick={(e) => {
             e.stopPropagation();
             navigate('/fitness');
@@ -51,8 +57,8 @@ export default function FitnessWidget({ steps, goal }: FitnessWidgetProps) {
         >
           View All
           <ArrowRight className="w-3 h-3" />
-        </button>
-      </div>
-    </div>
+        </Button>
+      </CardContent>
+    </Card>
   );
 } 

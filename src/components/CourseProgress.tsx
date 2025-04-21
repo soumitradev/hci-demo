@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { useCourseStore } from '../lib/store'
 import { calculateCourseProgress } from '../lib/utils'
 import { useMemo } from 'react'
+import { Progress } from './ui/progress'
+import { Card } from './ui/card'
 
 interface CourseProgressProps {
   courseId: string
@@ -19,9 +21,9 @@ export default function CourseProgress({ courseId }: CourseProgressProps) {
 
   // Calculate color based on days left
   const getAssessmentColor = (days: number) => {
-    if (days <= 7) return 'text-red-500'
-    if (days <= 15) return 'text-amber-500' 
-    return 'text-gray-900'
+    if (days <= 7) return 'text-destructive'
+    if (days <= 15) return 'text-yellow-500' 
+    return 'text-foreground'
   }
 
   // Convert course code to URL-friendly format
@@ -37,27 +39,22 @@ export default function CourseProgress({ courseId }: CourseProgressProps) {
   }
 
   return (
-    <div 
-      className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors"
+    <Card 
+      className="p-3 cursor-pointer hover:bg-accent transition-colors"
       onClick={() => navigate(`/courses/${getCourseId(course.courseCode)}`)}
     >
       {/* Course Title */}
-      <div className="flex items-center gap-2 mb-4">
-        <span className="font-semibold text-gray-900">{course.courseCode}</span>
-        <span className="text-gray-600">-</span>
-        <span className="text-gray-600">{course.courseName}</span>
+      <div className="flex items-center gap-1.5 mb-2">
+        <span className="font-semibold text-foreground">{course.courseCode}</span>
+        <span className="text-muted-foreground">-</span>
+        <span className="text-muted-foreground">{course.courseName}</span>
       </div>
 
       {/* Progress Bar */}
-      <div className="space-y-2 mb-4">
-        <div className="flex justify-between items-center">
-          <div className="h-2 flex-1 bg-purple-100 rounded-full overflow-hidden mr-3">
-            <div 
-              className="h-full bg-purple-600 rounded-full transition-all duration-500 ease-in-out"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <span className="text-sm font-medium text-gray-700">{progress}%</span>
+      <div className="space-y-1.5 mb-2">
+        <div className="flex justify-between items-center gap-2">
+          <Progress value={progress} className="flex-1 h-2" />
+          <span className="text-sm font-medium text-foreground">{progress}%</span>
         </div>
       </div>
 
@@ -68,11 +65,11 @@ export default function CourseProgress({ courseId }: CourseProgressProps) {
             Next: {getNextAssessmentText(nextAssessment)}
           </span>
         ) : (
-          <span className="text-sm font-medium text-gray-600">
+          <span className="text-sm font-medium text-muted-foreground">
             All evaluations complete
           </span>
         )}
       </div>
-    </div>
+    </Card>
   )
 } 

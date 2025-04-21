@@ -1,8 +1,9 @@
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFinanceStore } from '../stores/financeStore';
 import TransactionCard from '../components/TransactionCard';
 import Navbar from '../components/Navbar';
+import { Button } from '../components/ui/button';
 
 export default function AllTransactions() {
   const navigate = useNavigate();
@@ -54,13 +55,15 @@ export default function AllTransactions() {
     <div className="min-h-screen bg-white pb-20">
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         <div className="flex items-center gap-2 mb-8">
-          <button 
+          <Button 
             onClick={() => navigate('/finance')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <h1 className="text-4xl font-bold text-gray-900">Transactions</h1>
+            <ChevronLeft className="h-7 w-7" />
+          </Button>
+          <h1 className="text-4xl font-bold text-foreground">Transactions</h1>
         </div>
 
         <div className="flex flex-col gap-4">

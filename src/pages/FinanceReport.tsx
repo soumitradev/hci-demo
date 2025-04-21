@@ -1,19 +1,21 @@
 import { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFinanceStore, TimePeriod, Category } from '../stores/financeStore';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 // Category colors for consistent styling
 const categoryColors: Record<Category, { bg: string, text: string, chart: string }> = {
-  'Food': { bg: 'bg-red-200', text: 'text-red-500', chart: 'rgb(252, 165, 165)' },
-  'Shopping': { bg: 'bg-amber-200', text: 'text-amber-500', chart: 'rgb(252, 211, 77)' },
-  'Transport': { bg: 'bg-blue-200', text: 'text-blue-500', chart: 'rgb(147, 197, 253)' },
-  'Entertainment': { bg: 'bg-purple-200', text: 'text-purple-500', chart: 'rgb(216, 180, 254)' },
-  'Others': { bg: 'bg-gray-200', text: 'text-gray-500', chart: 'rgb(209, 213, 219)' }
+  'Food': { bg: 'bg-red-100 dark:bg-red-900/20', text: 'text-red-500 dark:text-red-400', chart: 'rgb(239, 68, 68)' },
+  'Shopping': { bg: 'bg-amber-100 dark:bg-amber-900/20', text: 'text-amber-500 dark:text-amber-400', chart: 'rgb(245, 158, 11)' },
+  'Transport': { bg: 'bg-blue-100 dark:bg-blue-900/20', text: 'text-blue-500 dark:text-blue-400', chart: 'rgb(59, 130, 246)' },
+  'Entertainment': { bg: 'bg-purple-100 dark:bg-purple-900/20', text: 'text-purple-500 dark:text-purple-400', chart: 'rgb(168, 85, 247)' },
+  'Others': { bg: 'bg-slate-100 dark:bg-slate-900/20', text: 'text-slate-500 dark:text-slate-400', chart: 'rgb(107, 114, 128)' }
 };
 
 export default function FinanceReport() {
@@ -62,69 +64,71 @@ export default function FinanceReport() {
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-8">
-          <button 
+          <Button 
             onClick={() => navigate('/finance')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <h1 className="text-2xl font-bold text-gray-900">Finances</h1>
+            <ChevronLeft className="h-7 w-7" />
+          </Button>
+          <h1 className="text-2xl font-bold text-foreground">Finance Report</h1>
         </div>
 
         <h2 className="text-xl text-gray-900">Statistics</h2>
 
         {/* Time Period Selector */}
         <div className="mt-4 grid grid-cols-3 gap-2">
-          <button 
+          <Button 
             onClick={() => setSelectedPeriod('day')}
-            className={selectedPeriod === 'day' 
-              ? 'px-4 py-1.5 rounded-lg bg-[#613EF8] text-white text-sm w-full'
-              : 'px-4 py-1.5 rounded-lg text-gray-600 text-sm w-full'
-            }
+            variant={selectedPeriod === 'day' ? 'secondary' : 'ghost'}
+            className={`w-full ${selectedPeriod === 'day' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
           >
             Day
-          </button>
-          <button 
+          </Button>
+          <Button 
             onClick={() => setSelectedPeriod('week')}
-            className={selectedPeriod === 'week'
-              ? 'px-4 py-1.5 rounded-lg bg-[#613EF8] text-white text-sm w-full'
-              : 'px-4 py-1.5 rounded-lg text-gray-600 text-sm w-full'
-            }
+            variant={selectedPeriod === 'week' ? 'secondary' : 'ghost'}
+            className={`w-full ${selectedPeriod === 'week' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
           >
             Week
-          </button>
-          <button 
+          </Button>
+          <Button 
             onClick={() => setSelectedPeriod('month')}
-            className={selectedPeriod === 'month'
-              ? 'px-4 py-1.5 rounded-lg bg-[#613EF8] text-white text-sm w-full'
-              : 'px-4 py-1.5 rounded-lg text-gray-600 text-sm w-full'
-            }
+            variant={selectedPeriod === 'month' ? 'secondary' : 'ghost'}
+            className={`w-full ${selectedPeriod === 'month' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
           >
             Month
-          </button>
+          </Button>
         </div>
 
         {/* Bar Chart */}
-        <div className="mt-8 space-y-4">
-          <div className="grid grid-cols-5 gap-4">
-            {barData.map((item, index) => {
-              const maxValue = Math.max(...barData.map(d => d.value));
-              const heightPercent = maxValue === 0 ? 0 : (item.value / maxValue) * 100;
-              return (
-                <div key={index} className="flex flex-col items-center gap-1">
-                  <div className="h-32 w-full flex items-end">
-                    <div 
-                      className="w-full bg-[#613EF8] rounded-t-lg transition-all duration-300"
-                      style={{ height: `${heightPercent}%` }}
-                    />
+        <Card className="mt-8">
+          <CardContent className="p-6">
+            <div className="grid grid-cols-5 gap-4">
+              {barData.map((item, index) => {
+                const maxValue = Math.max(...barData.map(d => d.value));
+                const heightPercent = maxValue === 0 ? 0 : (item.value / maxValue) * 100;
+                return (
+                  <div key={index} className="flex flex-col items-center gap-2">
+                    <div className="h-32 w-full flex items-end">
+                      <div 
+                        className="w-full transition-all duration-300"
+                        style={{ 
+                          height: `${heightPercent}%`, 
+                          minHeight: item.value > 0 ? '4px' : '0',
+                          backgroundColor: 'hsl(var(--primary))'
+                        }}
+                      />
+                    </div>
+                    <div className="text-sm text-gray-500">{item.label}</div>
+                    <div className="text-sm font-medium text-gray-900">₹{item.value}</div>
                   </div>
-                  <div className="text-sm text-gray-600">{item.label}</div>
-                  <div className="text-sm text-gray-600">₹{item.value}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Category Breakdown */}
         <div className="mt-12">

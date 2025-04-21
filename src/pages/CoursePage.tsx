@@ -1,253 +1,112 @@
-import { CirclePlus, MoreVertical, ArrowLeft } from 'lucide-react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from "react-router-dom"
+import { useCourseStore } from "../lib/store"
+import { ChevronLeft } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import { Progress } from "../components/ui/progress"
+import { Button } from "../components/ui/button"
 
-interface Assessment {
-  type: string
-  date: string
-  isUpcoming?: boolean
-}
-
-interface CourseLink {
-  title: string
-  url: string
-}
-
-interface Course {
-  courseCode: string
-  courseName: string
-  assessments: Assessment[]
-  links: CourseLink[]
-  progress: number
-}
-
-// This would typically come from an API or database
-const courseData: Record<string, Course> = {
-  'bits-f363': {
-    courseCode: 'BITS F363',
-    courseName: 'Human Computer Interaction',
-    assessments: [
-      {
-        type: 'Quiz 1',
-        date: 'Feb 18, 2025',
-        isUpcoming: false
-      },
-      {
-        type: 'Midsem',
-        date: 'March 6, 2025',
-        isUpcoming: false
-      },
-      {
-        type: 'Quiz 2',
-        date: 'March 17, 2025',
-        isUpcoming: true
-      },
-      {
-        type: 'Compre',
-        date: 'April 26, 2025',
-        isUpcoming: false
-      }
-    ],
-    links: [
-      {
-        title: 'Study Material',
-        url: '#'
-      },
-      {
-        title: 'Impartus',
-        url: '#'
-      },
-      {
-        title: 'Textbook PDF',
-        url: '#'
-      }
-    ],
-    progress: 10
-  },
-  'cs-f363': {
-    courseCode: 'CS F363',
-    courseName: 'Compiler Construction',
-    assessments: [
-      {
-        type: 'Lab 1',
-        date: 'Feb 15, 2025',
-        isUpcoming: false
-      },
-      {
-        type: 'Quiz 1',
-        date: 'Feb 22, 2025',
-        isUpcoming: true
-      },
-      {
-        type: 'Midsem',
-        date: 'March 8, 2025',
-        isUpcoming: false
-      },
-      {
-        type: 'Lab 2',
-        date: 'March 20, 2025',
-        isUpcoming: false
-      },
-      {
-        type: 'Compre',
-        date: 'April 28, 2025',
-        isUpcoming: false
-      }
-    ],
-    links: [
-      {
-        title: 'Study Material',
-        url: '#'
-      },
-      {
-        title: 'Lab Manual',
-        url: '#'
-      },
-      {
-        title: 'Dragon Book PDF',
-        url: '#'
-      },
-      {
-        title: 'ANTLR Documentation',
-        url: '#'
-      }
-    ],
-    progress: 30
-  },
-  'cs-f303': {
-    courseCode: 'CS F303',
-    courseName: 'Computer Networks',
-    assessments: [
-      {
-        type: 'Quiz 1',
-        date: 'Feb 20, 2025',
-        isUpcoming: true
-      },
-      {
-        type: 'Midsem',
-        date: 'March 10, 2025',
-        isUpcoming: false
-      },
-      {
-        type: 'Project Demo',
-        date: 'March 25, 2025',
-        isUpcoming: false
-      },
-      {
-        type: 'Quiz 2',
-        date: 'April 5, 2025',
-        isUpcoming: false
-      },
-      {
-        type: 'Compre',
-        date: 'April 30, 2025',
-        isUpcoming: false
-      }
-    ],
-    links: [
-      {
-        title: 'Study Material',
-        url: '#'
-      },
-      {
-        title: 'Wireshark Labs',
-        url: '#'
-      },
-      {
-        title: 'Kurose & Ross PDF',
-        url: '#'
-      },
-      {
-        title: 'Project Resources',
-        url: '#'
-      }
-    ],
-    progress: 50
-  }
-}
-
-export default function CoursePage() {
-  const { courseId } = useParams<{ courseId: string }>()
+export function CoursePage() {
   const navigate = useNavigate()
-  const course = courseData[courseId || '']
+  const { courseId } = useParams()
+  const course = useCourseStore(state => state.courses[courseId || ""])
 
   if (!course) {
     return <div>Course not found</div>
   }
 
+  // Calculate days left and determine status for each assessment
+  const today = new Date()
+  const assessments = course.assessments.map(assessment => {
+    const assessmentDate = new Date(assessment.date)
+    const daysLeft = Math.ceil((assessmentDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+    return {
+      ...assessment,
+      daysLeft,
+      isPast: assessmentDate < today
+    }
+  }).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+  // Function to get the appropriate text color based on days left
+  const getStatusColor = (daysLeft: number, isPast: boolean) => {
+    if (isPast) return "text-muted-foreground"
+    if (daysLeft <= 0) return "text-destructive"
+    if (daysLeft <= 7) return "text-destructive"
+    if (daysLeft <= 14) return "text-yellow-600"
+    return "text-muted-foreground"
+  }
+
+  // Function to format the date
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    })
+  }
+
+  // Function to format the status text
+  const getStatusText = (daysLeft: number, isPast: boolean) => {
+    if (isPast) return "Completed"
+    if (daysLeft === 0) return "Today"
+    if (daysLeft === 1) return "Tomorrow"
+    return `${daysLeft} days left`
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      {/* Back Button and Course Header */}
-      <div className="space-y-4">
-        <button 
-          onClick={() => navigate('/academics')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-4"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Academics</span>
-        </button>
-        <h1 className="text-2xl font-bold text-gray-900">{course.courseCode}</h1>
-        <h2 className="text-2xl text-gray-900">{course.courseName}</h2>
-      </div>
-
-      {/* Important Dates Section */}
-      <div className="mt-8 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Important Dates</h3>
-          <button className="text-gray-900 hover:text-purple-600 transition-colors">
-            <CirclePlus className="h-7 w-7" />
-          </button>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex items-center gap-2 mb-8">
+          <Button 
+            onClick={() => navigate(-1)}
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
+          >
+            <ChevronLeft className="h-7 w-7" />
+          </Button>
+          <h1 className="text-2xl font-bold text-foreground">{course.courseName}</h1>
         </div>
-        
-        <div className="space-y-3">
-          {course.assessments.map((assessment, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <span className="text-gray-900">{assessment.type}</span>
-              <div className="flex items-center gap-4">
-                <span className={`${assessment.isUpcoming ? 'text-amber-500' : 'text-gray-600'}`}>
-                  {assessment.date}
-                </span>
-                <button className="text-gray-900 hover:text-purple-600 transition-colors">
-                  <MoreVertical className="h-7 w-7" />
-                </button>
-              </div>
+        <p className="text-sm text-muted-foreground mb-6">{course.courseCode}</p>
+
+        <div className="space-y-8">
+          {/* Important Dates */}
+          <div>
+            <h2 className="text-lg font-medium mb-4">Important Dates</h2>
+            <div className="space-y-3">
+              {assessments.map((assessment, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg border">
+                  <div>
+                    <p className="font-medium text-foreground">{assessment.type}</p>
+                    <p className="text-sm text-muted-foreground">{formatDate(assessment.date)}</p>
+                  </div>
+                  <span className={getStatusColor(assessment.daysLeft, assessment.isPast)}>
+                    {getStatusText(assessment.daysLeft, assessment.isPast)}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* Links Section */}
-      <div className="mt-8 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Links</h3>
-          <button className="text-gray-900 hover:text-purple-600 transition-colors">
-            <CirclePlus className="h-7 w-7" />
-          </button>
-        </div>
-        
-        <div className="space-y-3">
-          {course.links.map((link, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <span className="text-gray-900">{link.title}</span>
-              <div className="flex items-center gap-4">
-                <span className="text-gray-600">...</span>
-                <button className="text-gray-900 hover:text-purple-600 transition-colors">
-                  <MoreVertical className="h-7 w-7" />
-                </button>
-              </div>
+          {/* Links */}
+          <div>
+            <h2 className="text-lg font-medium mb-4">Links</h2>
+            <div className="space-y-3">
+              {course.links.map((link, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg border">
+                  <span className="text-foreground">{link.title}</span>
+                  <span className="text-muted-foreground">...</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* Progress Section */}
-      <div className="mt-8 space-y-3">
-        <h3 className="text-lg font-medium text-gray-900">Progress</h3>
-        <div className="relative h-2">
-          <div className="absolute inset-0 rounded-full bg-purple-100">
-            <div 
-              className="h-full rounded-full bg-purple-600 transition-all duration-500 ease-in-out"
-              style={{ width: `${course.progress}%` }}
-            />
+          {/* Progress */}
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-medium">Progress</h2>
+              <span className="text-sm text-muted-foreground">{course.progress}%</span>
+            </div>
+            <Progress value={course.progress} className="h-2" />
           </div>
         </div>
       </div>

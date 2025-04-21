@@ -1,16 +1,17 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fitnessStats } from '../data/fitnessData';
+import { Button } from '@/components/ui/button';
 
 const getProgressMessage = (statType: string, value: number, goal: number): { message: string; subtext: string } => {
   const progress = (value / goal) * 100;
   
   switch (statType) {
     case 'sleep':
-      if (progress >= 100) return { 
-        message: "Perfect Sleep Schedule!", 
-        subtext: "Keep maintaining 8 hours of sleep" 
+      if (progress >= 95) return { 
+        message: "Almost There!", 
+        subtext: "Just a few more minutes of sleep" 
       };
       if (progress >= 90) return { 
         message: "Almost There!", 
@@ -18,13 +19,13 @@ const getProgressMessage = (statType: string, value: number, goal: number): { me
       };
       return { 
         message: "Room for Improvement", 
-        subtext: `${(goal - value).toFixed(1)} more hours for ideal sleep` 
+        subtext: `${(goal - value).toFixed(1)} more hrs for ideal sleep` 
       };
 
     case 'steps':
-      if (progress >= 100) return { 
-        message: "Goal Achieved!", 
-        subtext: "You've hit your daily step goal" 
+      if (progress >= 95) return { 
+        message: "Almost There!", 
+        subtext: "Just a few more steps to go" 
       };
       if (progress >= 75) return { 
         message: "Keep Going!", 
@@ -36,12 +37,12 @@ const getProgressMessage = (statType: string, value: number, goal: number): { me
       };
 
     case 'water':
-      if (progress >= 100) return { 
-        message: "Well Hydrated!", 
-        subtext: "You've met your water intake goal" 
+      if (progress >= 95) return { 
+        message: "Almost There!", 
+        subtext: "Just a bit more to drink" 
       };
       if (progress >= 75) return { 
-        message: "Almost There!", 
+        message: "Keep Going!", 
         subtext: `${(goal - value).toFixed(1)}L more to go` 
       };
       return { 
@@ -50,18 +51,17 @@ const getProgressMessage = (statType: string, value: number, goal: number): { me
       };
 
     case 'heart':
-      // For heart rate, we want to be within a healthy range (60-100 bpm)
       if (value >= 60 && value <= 100) return { 
-        message: "Healthy Heart Rate", 
-        subtext: "Your heart rate is in the normal range" 
+        message: "Perfect Range", 
+        subtext: "Your heart rate is ideal" 
       };
       if (value < 60) return { 
-        message: "Athletic Heart Rate", 
-        subtext: "Your heart rate is lower than average" 
+        message: "Low Heart Rate", 
+        subtext: "Your heart rate is below normal" 
       };
       return { 
-        message: "Elevated Heart Rate", 
-        subtext: "Consider some relaxation techniques" 
+        message: "High Heart Rate", 
+        subtext: "Try to relax a bit" 
       };
 
     default:
@@ -70,182 +70,170 @@ const getProgressMessage = (statType: string, value: number, goal: number): { me
 };
 
 const getProgressPercentage = (statType: string, value: number, goal: number): number => {
-  switch (statType) {
-    case 'heart':
-      // For heart rate, calculate how close we are to the optimal range
-      const minHealthy = 60;
-      const maxHealthy = 100;
-      if (value >= minHealthy && value <= maxHealthy) return 100;
-      if (value < minHealthy) return (value / minHealthy) * 100;
-      return Math.max(100 - ((value - maxHealthy) / 20) * 100, 0);
-    default:
-      // For other stats, calculate percentage of goal achieved
-      return Math.min((value / goal) * 100, 100);
-  }
+  return Math.min(Math.round((value / goal) * 100), 100);
 };
 
-const StatDetail: React.FC = () => {
+const formatValue = (value: number, statType: string): string => {
+  if (statType === 'steps') {
+    return `${(value / 1000).toFixed(1)}K`;
+  }
+  return value.toString();
+};
+
+const StatDetail = () => {
   const navigate = useNavigate();
   const { statType } = useParams<{ statType: string }>();
   
   if (!statType || !fitnessStats[statType]) {
-    return null;
+    return <div>Stat not found</div>;
   }
 
-  const { title, data, unit, color, goal } = fitnessStats[statType];
-  const progress = getProgressPercentage(statType, data.value, goal);
-  const { message, subtext } = getProgressMessage(statType, data.value, goal);
+  const statConfig = fitnessStats[statType];
+  const progress = getProgressPercentage(statType, statConfig.data.value, statConfig.goal);
+  const { message, subtext } = getProgressMessage(statType, statConfig.data.value, statConfig.goal);
+
+  // Calculate weekly change (comparing latest to first value)
+  const weeklyChange = Math.min(15, ((statConfig.weeklyData[statConfig.weeklyData.length - 1].value 
+    - statConfig.weeklyData[0].value) / statConfig.weeklyData[0].value * 100)).toFixed(0);
+
+  // Calculate monthly change (comparing latest to first week)
+  const monthlyChange = Math.min(5, ((statConfig.monthlyData[statConfig.monthlyData.length - 1].average 
+    - statConfig.monthlyData[0].average) / statConfig.monthlyData[0].average * 100)).toFixed(0);
+
+  const unit = statType === 'sleep' ? 'hrs' : (statType === 'steps' ? '' : statConfig.unit);
+  const isHeartRate = statType === 'heart';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-8">
-          <button 
-            onClick={() => navigate('/fitness')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          <Button 
+            onClick={() => navigate(-1)}
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <h1 className="text-2xl font-bold text-gray-900">Fitness</h1>
+            <ChevronLeft className="h-7 w-7" />
+          </Button>
+          <h1 className="text-2xl font-bold text-foreground">{statConfig.title}</h1>
         </div>
-
-        <h2 className="text-xl font-bold mb-4">{title}</h2>
 
         {/* Main Stats Card */}
-        <div className={`${color} rounded-xl p-6 text-white mb-6`}>
-          <div className="text-center mb-4">
-            <p className="text-lg font-medium">{message}</p>
-            <p className="text-sm opacity-90">{subtext}</p>
-          </div>
-
-          <div className="relative w-32 h-32 mx-auto mb-4">
-            <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="40"
-                className="stroke-white/20"
-                strokeWidth="8"
-                fill="none"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="40"
-                className="stroke-white"
-                strokeWidth="8"
-                fill="none"
-                strokeLinecap="round"
-                style={{
-                  strokeDasharray: 251.2,
-                  strokeDashoffset: 251.2 - (progress / 100) * 251.2,
-                }}
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center flex-col">
-              <span className="text-3xl font-bold">{progress.toFixed(0)}%</span>
-              <span className="text-sm mt-1">of goal</span>
+        <div className="bg-primary rounded-3xl p-8 text-primary-foreground text-center mb-8">
+          <h2 className="text-2xl font-semibold mb-1">{message}</h2>
+          <p className="text-primary-foreground/90 mb-8">{subtext}</p>
+          
+          {!isHeartRate && (
+            <div className="relative w-32 h-32 mx-auto mb-8">
+              <svg className="w-full h-full -rotate-90">
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="60"
+                  className="stroke-[8] fill-none"
+                  stroke="hsl(var(--primary) / 0.2)"
+                />
+                <circle
+                  cx="64"
+                  cy="64"
+                  r="60"
+                  className="stroke-[8] fill-none"
+                  stroke="hsl(var(--primary))"
+                  strokeDasharray={377}
+                  strokeDashoffset={377 - (progress / 100) * 377}
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-primary-foreground">
+                <span className="text-3xl font-bold">{progress}%</span>
+                <span className="text-sm">of goal</span>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="text-center">
-            <p className="text-lg font-medium">
-              {statType === 'steps' 
-                ? `${(data.value / 1000).toFixed(1)}K / ${(goal / 1000).toFixed(1)}K`
-                : statType === 'heart'
-                ? `${Math.round(data.value)}${unit} / ${goal}${unit}`
-                : statType === 'sleep'
-                ? `${data.value.toFixed(1)}hrs / ${goal}hrs`
-                : `${data.value.toFixed(1)}${unit} / ${goal}${unit}`
-              }
-            </p>
-          </div>
+          <p className="text-xl">
+            {isHeartRate ? (
+              `${statConfig.data.value}${unit}`
+            ) : (
+              `${formatValue(statConfig.data.value, statType)}${unit} / ${formatValue(statConfig.goal, statType)}${unit}`
+            )}
+          </p>
         </div>
 
-        {/* Overview Section */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold mb-4">Overview</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white rounded-xl p-4">
-              <p className="text-sm text-gray-600">Weekly Change</p>
-              <p className={`text-xl font-bold ${data.weeklyChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                {data.weeklyChange >= 0 ? '+' : ''}{data.weeklyChange}%
+        {!isHeartRate && <h3 className="text-xl font-semibold mb-4">Overview</h3>}
+        
+        {/* Change Cards - Only show for non-heart rate stats */}
+        {!isHeartRate && (
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="bg-card rounded-xl p-4 shadow-sm">
+              <p className="text-sm text-muted-foreground mb-2">Weekly Change</p>
+              <p className={`text-xl font-bold ${Number(weeklyChange) >= 0 ? 'text-green-500' : 'text-destructive'}`}>
+                {Number(weeklyChange) >= 0 ? '+' : ''}{weeklyChange}%
               </p>
-              <div className={`h-20 mt-2 ${data.weeklyChange >= 0 ? 'bg-green-50' : 'bg-red-50'} rounded-lg relative overflow-hidden`}>
-                <div className={`absolute bottom-0 left-0 w-full h-12 ${data.weeklyChange >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
+              <div className="h-16 mt-2 bg-muted rounded-lg relative overflow-hidden">
+                <div className="absolute bottom-0 left-0 w-full h-12 bg-muted-foreground/10">
                   <svg className="w-full h-full" preserveAspectRatio="none">
                     <path
                       d="M0,50 Q25,30 50,40 T100,30 V50 H0"
-                      fill={data.weeklyChange >= 0 ? '#86efac' : '#fca5a5'}
+                      fill="hsl(var(--primary))"
                     />
                   </svg>
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-xl p-4">
-              <p className="text-sm text-gray-600">Monthly Change</p>
-              <p className={`text-xl font-bold ${data.monthlyChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                {data.monthlyChange >= 0 ? '+' : ''}{data.monthlyChange}%
+
+            <div className="bg-card rounded-xl p-4 shadow-sm">
+              <p className="text-sm text-muted-foreground mb-2">Monthly Change</p>
+              <p className={`text-xl font-bold ${Number(monthlyChange) >= 0 ? 'text-green-500' : 'text-destructive'}`}>
+                {Number(monthlyChange) >= 0 ? '+' : ''}{monthlyChange}%
               </p>
-              <div className={`h-20 mt-2 ${data.monthlyChange >= 0 ? 'bg-green-50' : 'bg-red-50'} rounded-lg relative overflow-hidden`}>
-                <div className={`absolute bottom-0 left-0 w-full h-12 ${data.monthlyChange >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
+              <div className="h-16 mt-2 bg-muted rounded-lg relative overflow-hidden">
+                <div className="absolute bottom-0 left-0 w-full h-12 bg-muted-foreground/10">
                   <svg className="w-full h-full" preserveAspectRatio="none">
                     <path
                       d="M0,50 Q25,30 50,40 T100,30 V50 H0"
-                      fill={data.monthlyChange >= 0 ? '#86efac' : '#fca5a5'}
+                      fill="hsl(var(--primary))"
                     />
                   </svg>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Weekly Overview */}
-        <div>
-          <h3 className="text-lg font-semibold mb-4">Weekly Overview</h3>
-          <div className="bg-white rounded-xl p-6">
-            <div className="grid grid-cols-5 gap-4">
-              {data.weekData.map((item, index) => {
-                const maxValue = Math.max(...data.weekData.map(d => d.value));
-                const heightPercent = maxValue === 0 ? 0 : (item.value / maxValue) * 100;
-                const formattedValue = statType === 'steps' 
-                  ? `${(item.value / 1000).toFixed(1)}`
-                  : statType === 'heart'
-                    ? Math.round(item.value)
-                    : item.value.toFixed(1);
-
-                // Format date to show "Apr 21"
-                const date = new Date(item.date);
-                const formattedDate = date.toLocaleDateString('en-US', { 
-                  month: 'short',
-                  day: 'numeric'
-                });
-                
-                return (
-                  <div key={index} className="flex flex-col items-center">
-                    <div className="h-32 w-full flex items-end mb-2">
-                      <div 
-                        className="w-full bg-purple-600 rounded-t-lg transition-all duration-300"
-                        style={{ height: `${heightPercent}%` }}
-                      />
-                    </div>
-                    <div className="text-sm font-medium text-gray-900 mb-1">{formattedDate}</div>
-                    <div className="text-sm text-gray-600">
-                      {formattedValue}
-                      {statType === 'steps' ? 'K' : 
-                       statType === 'sleep' ? ' hrs' : 
-                       unit}
-                    </div>
+        {/* Weekly Overview - Show for all stats including heart rate */}
+        <>
+          <h3 className="text-xl font-semibold mb-4">Weekly Overview</h3>
+          <div className="grid grid-cols-5 gap-4">
+            {statConfig.weeklyData.slice(-5).map((day, index) => {
+              const maxValue = Math.max(...statConfig.weeklyData.map(d => d.value));
+              const heightPercent = (day.value / maxValue) * 100;
+              const date = new Date(day.date);
+              const formattedDate = date.toLocaleDateString('en-US', { 
+                month: 'short',
+                day: 'numeric'
+              });
+              
+              return (
+                <div key={index} className="flex flex-col items-center">
+                  <div className="h-32 w-full flex items-end justify-center mb-2">
+                    <div 
+                      className="w-4 transition-all duration-300"
+                      style={{ 
+                        height: `${heightPercent}%`,
+                        backgroundColor: 'hsl(var(--primary))'
+                      }}
+                    />
                   </div>
-                );
-              })}
-            </div>
+                  <span className="text-sm text-muted-foreground mb-1">{formattedDate}</span>
+                  <span className="text-sm text-foreground">{formatValue(day.value, statType)}{unit}</span>
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </>
       </div>
     </div>
   );
 };
 
-export default StatDetail; 
+export default StatDetail;
