@@ -8,7 +8,6 @@ import AllTransactions from "./pages/AllTransactions";
 import FinanceReport from "./pages/FinanceReport";
 import Budget from "./pages/Budget";
 import Leaderboard from "./pages/Leaderboard";
-import FitnessWidget from "./components/FitnessWidget";
 import Fitness from "./pages/Fitness";
 import StatDetail from "./pages/StatDetail";
 import { useCourseStore } from './lib/store';
@@ -17,14 +16,14 @@ import { useFinanceStore } from './stores/financeStore';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fitnessStats } from './data/fitnessData';
-import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import { Card, CardContent } from "./components/ui/card";
 import { Button } from "./components/ui/button";
-import { Progress } from "./components/ui/progress";
+import React from 'react';
 
 function Home() {
   const navigate = useNavigate();
   const { courses } = useCourseStore();
-  const events = useTimetableStore(state => state.events);
+  const { events } = useTimetableStore();
   const currentMonthSpending = useFinanceStore(state => state.calculateCurrentMonthSpending());
   const totalBudget = useFinanceStore(state => state.getTotalBudget());
 
@@ -246,12 +245,15 @@ function Home() {
 
           {/* Leaderboard Position */}
           <Card 
-            className="md:col-span-2 bg-primary text-primary-foreground cursor-pointer hover:shadow-md transition-shadow"
+            className="md:col-span-2 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => navigate('/leaderboard')}
           >
-            <CardContent className="flex items-center gap-4 p-4">
-              <span className="font-semibold text-base -mt-0.5">#4</span>
-              <p className="font-medium text-sm -mt-0.5">You are doing better than 93% of other students!</p>
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-4">
+                <span className="font-semibold text-base text-foreground">#4</span>
+                <p className="font-medium text-sm text-foreground">You are doing better than <span className="text-primary">93%</span> of other students!</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-muted-foreground" />
             </CardContent>
           </Card>
         </div>
@@ -263,21 +265,28 @@ function Home() {
 }
 
 export default function App() {
+  React.useEffect(() => {
+    // Add dark class to document root for portal elements
+    document.documentElement.classList.add('dark');
+  }, []);
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/academics" element={<Academics />} />
-        <Route path="/courses/:courseId" element={<Course />} />
-        <Route path="/timetable" element={<TimetablePage />} />
-        <Route path="/finance" element={<Finance />} />
-        <Route path="/finance/transactions" element={<AllTransactions />} />
-        <Route path="/finance/report" element={<FinanceReport />} />
-        <Route path="/finance/budget" element={<Budget />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/fitness" element={<Fitness />} />
-        <Route path="/fitness/:statType" element={<StatDetail />} />
-      </Routes>
-    </Router>
+    <div className="dark">
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/academics" element={<Academics />} />
+          <Route path="/courses/:courseId" element={<Course />} />
+          <Route path="/timetable" element={<TimetablePage />} />
+          <Route path="/finance" element={<Finance />} />
+          <Route path="/finance/transactions" element={<AllTransactions />} />
+          <Route path="/finance/report" element={<FinanceReport />} />
+          <Route path="/finance/budget" element={<Budget />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/fitness" element={<Fitness />} />
+          <Route path="/fitness/:statType" element={<StatDetail />} />
+        </Routes>
+      </Router>
+    </div>
   )
 }

@@ -1,10 +1,10 @@
-import { ChevronDown, ChevronRight, ChevronUp, ArrowRight } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFinanceStore } from '../stores/financeStore';
 import TransactionCard from '../components/TransactionCard';
 import Navbar from '../components/Navbar';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 
 export default function Finance() {
   const navigate = useNavigate();
@@ -122,6 +122,18 @@ export default function Finance() {
           </CardContent>
         </Card>
 
+        {/* Budget Button */}
+        <div className="mt-4">
+          <Button 
+            onClick={() => navigate('/finance/budget')}
+            variant="secondary"
+            className="w-full justify-between gap-2"
+          >
+            <span>See your budget</span>
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
+
         {/* Recent Transactions */}
         <div className="mt-4">
           <div className="flex justify-between items-center mb-2">
@@ -130,8 +142,10 @@ export default function Finance() {
               onClick={() => navigate('/finance/transactions')}
               variant="secondary"
               size="sm"
+              className="gap-2"
             >
               See All
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
 
@@ -154,18 +168,6 @@ export default function Finance() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Bottom Actions */}
-        <div className="mt-3">
-          <Button 
-            onClick={() => navigate('/finance/budget')}
-            variant="secondary"
-            className="w-full justify-between"
-          >
-            <span>See your budget</span>
-            <ChevronRight className="w-4 h-4" />
-          </Button>
         </div>
       </main>
 

@@ -57,10 +57,10 @@ export function CoursePage() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-8">
           <Button 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/academics')}
             variant="ghost"
             size="icon"
-            className="rounded-full"
+            className="rounded-full text-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-7 w-7" />
           </Button>
@@ -72,9 +72,9 @@ export function CoursePage() {
           {/* Important Dates */}
           <div>
             <h2 className="text-lg font-medium mb-4">Important Dates</h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {assessments.map((assessment, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg border">
+                <div key={index} className="flex items-center justify-between">
                   <div>
                     <p className="font-medium text-foreground">{assessment.type}</p>
                     <p className="text-sm text-muted-foreground">{formatDate(assessment.date)}</p>
@@ -90,9 +90,9 @@ export function CoursePage() {
           {/* Links */}
           <div>
             <h2 className="text-lg font-medium mb-4">Links</h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {course.links.map((link, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg border">
+                <div key={index} className="flex items-center justify-between">
                   <span className="text-foreground">{link.title}</span>
                   <span className="text-muted-foreground">...</span>
                 </div>

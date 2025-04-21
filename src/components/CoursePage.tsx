@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { useState, useRef, useMemo } from 'react'
 import AddAssessmentModal from './AddAssessmentModal'
 import AssessmentMenu from './AssessmentMenu'
-import { formatDate, parseDate, calculateCourseProgress } from '../lib/utils'
+import { formatDate, parseDate } from '../lib/utils'
 import { Progress } from './ui/progress'
+import { Button } from './ui/button'
 
 interface Assessment {
   type: string
@@ -34,7 +35,6 @@ export default function CoursePage({
   courseId
 }: CoursePageProps) {
   const navigate = useNavigate()
-  const nextAssessment = useCourseStore((state) => state.getNextAssessment(courseId))
   const updateCourse = useCourseStore((state) => state.updateCourse)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedAssessment, setSelectedAssessment] = useState<Assessment | null>(null)
@@ -45,7 +45,7 @@ export default function CoursePage({
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   // Sort and categorize assessments, calculate progress
-  const { sortedAssessments, hasUpcoming, progress } = useMemo(() => {
+  const { sortedAssessments, progress } = useMemo(() => {
     const today = new Date()
     const processed = assessments.map(assessment => ({
       ...assessment,
@@ -61,7 +61,6 @@ export default function CoursePage({
 
     return {
       sortedAssessments: processed,
-      hasUpcoming: processed.some(a => !a.isPast),
       progress: progressValue
     }
   }, [assessments])
@@ -120,13 +119,14 @@ export default function CoursePage({
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-3xl mx-auto">
-        <button
+        <Button
+          variant="ghost"
           onClick={() => navigate('/academics')}
-          className="flex items-center gap-2 text-foreground hover:text-primary transition-colors mb-4"
+          className="mb-4"
         >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back to Academics</span>
-        </button>
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back to Academics
+        </Button>
 
         <h2 className="text-2xl text-foreground">{courseName}</h2>
         <p className="text-sm text-muted-foreground mb-6">{courseCode}</p>
@@ -145,13 +145,13 @@ export default function CoursePage({
             </div>
 
             {sortedAssessments.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {sortedAssessments.map((assessment, index) => {
                   const days = Math.ceil(
                     (parseDate(assessment.date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
                   )
                   return (
-                    <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg">
+                    <div key={index} className="flex items-center justify-between">
                       <div>
                         <span className={`${assessment.isPast ? 'text-muted-foreground' : 'text-foreground'}`}>
                           {assessment.type}
@@ -202,30 +202,15 @@ export default function CoursePage({
 
           {/* Links Section */}
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-foreground">Links</h3>
-              <button className="text-foreground hover:text-primary transition-colors">
-                <CirclePlus className="w-5 h-5" />
-              </button>
+            <h3 className="text-lg font-medium text-foreground mb-4">Links</h3>
+            <div className="space-y-4">
+              {links.map((link, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <span className="text-foreground">{link.title}</span>
+                  <span className="text-muted-foreground">...</span>
+                </div>
+              ))}
             </div>
-
-            {links.length > 0 ? (
-              <div className="space-y-3">
-                {links.map((link, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-card rounded-lg">
-                    <span className="text-foreground">{link.title}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground">...</span>
-                      <button className="text-foreground hover:text-primary transition-colors">
-                        <MoreVertical className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground italic">No links available</p>
-            )}
           </div>
 
           {/* Progress Section */}

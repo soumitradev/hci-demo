@@ -4,14 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { fitnessStats } from '../data/fitnessData';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
-import { Progress } from '../components/ui/progress';
-
-interface DayData {
-  day: string;
-  value: number;
-}
-
-const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const Fitness: React.FC = () => {
   const navigate = useNavigate();
@@ -64,7 +56,7 @@ const Fitness: React.FC = () => {
             variant="ghost"
             size="icon"
             onClick={() => navigate('/')}
-            className="rounded-full"
+            className="rounded-full text-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-7 w-7" />
           </Button>
@@ -85,11 +77,15 @@ const Fitness: React.FC = () => {
             <Button
               key={date}
               onClick={() => setSelectedDate(date)}
-              variant={selectedDate === date ? 'default' : 'outline'}
-              className="flex flex-col items-center justify-center min-w-[4.5rem] p-3 h-auto"
+              variant="ghost"
+              className={`flex flex-col items-center justify-center min-w-[4.5rem] p-3 h-auto text-foreground hover:text-foreground ${
+                selectedDate === date 
+                  ? 'bg-accent text-accent-foreground hover:bg-accent/90' 
+                  : 'hover:bg-accent/50'
+              }`}
             >
-              <span className="text-2xl font-semibold">{dayOfMonth}</span>
-              <span className="text-sm">{day}</span>
+              <span className={`text-2xl font-semibold ${selectedDate === date ? 'text-accent-foreground' : 'text-foreground'}`}>{dayOfMonth}</span>
+              <span className={`text-sm ${selectedDate === date ? 'text-accent-foreground/80' : 'text-muted-foreground'}`}>{day}</span>
             </Button>
           ))}
         </div>

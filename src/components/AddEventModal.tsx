@@ -57,27 +57,28 @@ export default function AddEventModal({ isOpen, onClose, onAdd }: AddEventModalP
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Event</DialogTitle>
+          <DialogTitle className="text-foreground">Add New Event</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title" className="text-foreground">Title</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Event title"
               required
+              className="bg-background text-foreground"
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category" className="text-foreground">Category</Label>
             <Select 
               value={category} 
               onValueChange={(value: EventCategory) => setCategory(value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="bg-background text-foreground">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -90,45 +91,48 @@ export default function AddEventModal({ isOpen, onClose, onAdd }: AddEventModalP
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="location">Location</Label>
+            <Label htmlFor="location" className="text-foreground">Location</Label>
             <Input
               id="location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Event location"
               required
+              className="bg-background text-foreground"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="startTime">Start Time</Label>
+              <Label htmlFor="startTime" className="text-foreground">Start Time</Label>
               <Input
                 id="startTime"
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 required
+                className="bg-background text-foreground"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="endTime">End Time</Label>
+              <Label htmlFor="endTime" className="text-foreground">End Time</Label>
               <Input
                 id="endTime"
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required
+                className="bg-background text-foreground"
               />
             </div>
           </div>
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="text-foreground">
               Cancel
             </Button>
-            <Button type="submit">Add Event</Button>
+            <Button type="submit" variant="secondary">Add Event</Button>
           </div>
         </form>
       </DialogContent>

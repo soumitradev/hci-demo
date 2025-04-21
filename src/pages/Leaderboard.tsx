@@ -408,26 +408,28 @@ const Leaderboard: React.FC = () => {
         {/* Time Filter */}
         <div className="grid grid-cols-2 gap-2 mb-3">
           <Button
-            variant={timeFilter === 'weekly' ? 'default' : 'outline'}
+            variant="ghost"
             onClick={() => setTimeFilter('weekly')}
-            className="w-full"
+            className={`w-full text-foreground hover:text-foreground ${timeFilter === 'weekly' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}`}
           >
             Weekly
           </Button>
           <Button
-            variant={timeFilter === 'all' ? 'default' : 'outline'}
+            variant="ghost"
             onClick={() => setTimeFilter('all')}
-            className="w-full"
+            className={`w-full text-foreground hover:text-foreground ${timeFilter === 'all' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}`}
           >
             All Time
           </Button>
         </div>
 
         {/* Performance Card */}
-        <Card className="bg-primary p-3 text-primary-foreground mb-4">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-lg">#4</span>
-            <p className="font-medium">You are doing better than <span className="font-bold">93% of other students!</span></p>
+        <Card className="bg-primary p-4 text-primary-foreground mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="font-semibold text-base">#4</span>
+              <p className="font-medium text-sm">You are doing better than <span className="font-bold">93% of other students!</span></p>
+            </div>
           </div>
         </Card>
 

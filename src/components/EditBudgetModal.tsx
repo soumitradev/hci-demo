@@ -30,13 +30,13 @@ const EditBudgetModal: React.FC<EditBudgetModalProps> = ({ isOpen, onClose, cate
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Budget for {category}</DialogTitle>
+          <DialogTitle className="text-foreground">Edit Budget for {category}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <Label htmlFor="budget">Budget Amount</Label>
+              <Label htmlFor="budget" className="text-foreground">Budget Amount</Label>
               <span className="text-sm text-muted-foreground">
                 Current: ₹{currentBudget.toLocaleString()}
               </span>
@@ -47,6 +47,7 @@ const EditBudgetModal: React.FC<EditBudgetModalProps> = ({ isOpen, onClose, cate
               value={newBudget}
               onChange={(e) => setNewBudget(parseFloat(e.target.value))}
               required
+              className="bg-background text-foreground"
             />
           </div>
 
@@ -56,13 +57,13 @@ const EditBudgetModal: React.FC<EditBudgetModalProps> = ({ isOpen, onClose, cate
               checked={alertEnabled}
               onCheckedChange={(checked) => setAlertEnabled(checked as boolean)}
             />
-            <Label htmlFor="alerts">Receive Alert</Label>
+            <Label htmlFor="alerts" className="text-foreground">Receive Alert</Label>
           </div>
 
           {alertEnabled && (
             <div className="space-y-4">
               <div className="flex justify-between">
-                <Label htmlFor="threshold">Alert Threshold</Label>
+                <Label htmlFor="threshold" className="text-foreground">Alert Threshold</Label>
                 <span className="text-sm text-muted-foreground">{threshold}%</span>
               </div>
               <Slider
@@ -78,12 +79,10 @@ const EditBudgetModal: React.FC<EditBudgetModalProps> = ({ isOpen, onClose, cate
           )}
 
           <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="outline" onClick={onClose} className="text-foreground">
               Cancel
             </Button>
-            <Button type="submit">
-              Update Budget
-            </Button>
+            <Button type="submit" variant="secondary">Update Budget</Button>
           </div>
         </form>
       </DialogContent>

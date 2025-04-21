@@ -1,21 +1,21 @@
-import { Progress } from "./ui/progress"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from 'react';
+import { Progress } from './ui/progress';
 
 export function ProgressDemo() {
-  const [progress, setProgress] = useState(13)
+  const [progress, setProgress] = useState(13);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((prevProgress) => {
         if (prevProgress >= 100) {
-          return 0
+          return 0;
         }
-        return prevProgress + 1
-      })
-    }, 100)
+        return prevProgress + 1;
+      });
+    }, 100);
 
-    return () => clearInterval(timer)
-  }, [])
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div className="w-full space-y-2">
@@ -25,5 +25,5 @@ export function ProgressDemo() {
       </div>
       <Progress value={progress} className="w-full" />
     </div>
-  )
-} 
+  );
+}

@@ -1,10 +1,9 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, AlertCircle, ArrowLeft, Pencil } from 'lucide-react';
+import { ChevronLeft, ChevronRight, AlertCircle, Pencil } from 'lucide-react';
 import { useFinanceStore, Category } from '../stores/financeStore';
 import EditBudgetModal from '../components/EditBudgetModal';
 import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
 
 const categoryColors: Record<Category, { bg: string, dot: string, text: string, progress: string }> = {
@@ -80,36 +79,40 @@ export default function Budget() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-background pb-20">
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         <div className="flex items-center gap-2 mb-8">
           <Button 
             onClick={() => navigate('/finance')}
             variant="ghost"
             size="icon"
-            className="rounded-full"
+            className="rounded-full text-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-7 w-7" />
           </Button>
           <h1 className="text-4xl font-bold text-foreground">Budget</h1>
         </div>
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Budget</h2>
+        <h2 className="text-2xl font-semibold text-foreground mb-4">Budget</h2>
 
         {/* Month Selector */}
         <div className="flex items-center justify-between mb-8">
-          <button 
+          <Button 
             onClick={prevMonth}
-            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
+            className="rounded-full text-foreground hover:text-foreground"
           >
             <ChevronLeft className="w-6 h-6" />
-          </button>
-          <span className="text-lg text-primary font-medium">{monthName}</span>
-          <button 
+          </Button>
+          <span className="text-lg font-medium text-foreground">{monthName}</span>
+          <Button 
             onClick={nextMonth}
-            className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
+            className="rounded-full text-foreground hover:text-foreground"
           >
             <ChevronRight className="w-6 h-6" />
-          </button>
+          </Button>
         </div>
 
         {/* Budget Cards */}
@@ -121,40 +124,44 @@ export default function Budget() {
             const isOverBudget = spent > budget;
 
             return (
-              <div key={category} className="bg-white rounded-2xl p-4 shadow-sm">
+              <div key={category} className="bg-card rounded-2xl p-4 shadow-sm">
                 <div className="flex justify-between items-center mb-4">
                   <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${categoryColors[category as Category].bg}`}>
                     <div className={`w-3.5 h-3.5 rounded-full ${categoryColors[category as Category].dot}`} />
-                    <span className="text-sm text-gray-900">{category}</span>
+                    <span className="text-sm text-foreground">{category}</span>
                   </div>
-                  {isOverBudget && (
-                    <AlertCircle className="w-8 h-8 text-red-500" />
-                  )}
-                  <button 
-                    onClick={() => handleEditBudget(category as Category)} 
-                    className="p-2 text-gray-500 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
-                  >
-                    <Pencil className="h-5 w-5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {isOverBudget && (
+                      <AlertCircle className="w-5 h-5 text-destructive" />
+                    )}
+                    <Button 
+                      onClick={() => handleEditBudget(category as Category)} 
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full text-foreground hover:text-foreground"
+                    >
+                      <Pencil className="h-5 w-5" />
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="text-xl font-medium text-gray-900">
+                  <h3 className="text-xl font-medium text-foreground">
                     Remaining ₹{Math.max(0, remaining).toLocaleString()}
                   </h3>
 
                   {/* Progress Bar */}
                   <Progress 
                     value={Math.min(100, progress)}
-                    className={`${isOverBudget ? 'bg-red-200' : categoryColors[category as Category].bg} ${isOverBudget ? '[&>div]:bg-red-500' : categoryColors[category as Category].progress}`}
+                    className={`${isOverBudget ? 'bg-destructive/20' : categoryColors[category as Category].bg} ${isOverBudget ? '[&>div]:bg-destructive' : categoryColors[category as Category].progress}`}
                   />
 
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     ₹{spent.toLocaleString()} of ₹{budget.toLocaleString()}
                   </div>
 
                   {isOverBudget && (
-                    <p className="text-sm text-red-500">
+                    <p className="text-sm text-destructive">
                       You've exceeded the limit!
                     </p>
                   )}

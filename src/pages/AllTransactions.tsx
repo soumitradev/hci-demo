@@ -52,14 +52,14 @@ export default function AllTransactions() {
   }, {} as Record<string, typeof sortedTransactions>);
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-background pb-20">
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         <div className="flex items-center gap-2 mb-8">
           <Button 
             onClick={() => navigate('/finance')}
             variant="ghost"
             size="icon"
-            className="rounded-full"
+            className="rounded-full text-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-7 w-7" />
           </Button>
@@ -69,7 +69,7 @@ export default function AllTransactions() {
         <div className="flex flex-col gap-4">
           {Object.entries(groupedTransactions).map(([date, transactions]) => (
             <div key={date} className="flex flex-col gap-3">
-              <h4 className="text-sm font-medium text-gray-500 px-1">
+              <h4 className="text-sm font-medium text-muted-foreground px-1">
                 {formatDate(new Date(date))}
               </h4>
               {transactions.map(transaction => (

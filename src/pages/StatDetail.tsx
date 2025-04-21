@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fitnessStats } from '../data/fitnessData';
@@ -69,7 +68,7 @@ const getProgressMessage = (statType: string, value: number, goal: number): { me
   }
 };
 
-const getProgressPercentage = (statType: string, value: number, goal: number): number => {
+const getProgressPercentage = (value: number, goal: number): number => {
   return Math.min(Math.round((value / goal) * 100), 100);
 };
 
@@ -89,7 +88,7 @@ const StatDetail = () => {
   }
 
   const statConfig = fitnessStats[statType];
-  const progress = getProgressPercentage(statType, statConfig.data.value, statConfig.goal);
+  const progress = getProgressPercentage(statConfig.data.value, statConfig.goal);
   const { message, subtext } = getProgressMessage(statType, statConfig.data.value, statConfig.goal);
 
   // Calculate weekly change (comparing latest to first value)
@@ -111,7 +110,7 @@ const StatDetail = () => {
             onClick={() => navigate(-1)}
             variant="ghost"
             size="icon"
-            className="rounded-full"
+            className="rounded-full text-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-7 w-7" />
           </Button>
@@ -119,9 +118,9 @@ const StatDetail = () => {
         </div>
 
         {/* Main Stats Card */}
-        <div className="bg-primary rounded-3xl p-8 text-primary-foreground text-center mb-8">
-          <h2 className="text-2xl font-semibold mb-1">{message}</h2>
-          <p className="text-primary-foreground/90 mb-8">{subtext}</p>
+        <div className="bg-card rounded-3xl p-8 text-center mb-8 border">
+          <h2 className="text-2xl font-semibold mb-1 text-foreground">{message}</h2>
+          <p className="text-muted-foreground mb-8">{subtext}</p>
           
           {!isHeartRate && (
             <div className="relative w-32 h-32 mx-auto mb-8">
@@ -143,14 +142,14 @@ const StatDetail = () => {
                   strokeDashoffset={377 - (progress / 100) * 377}
                 />
               </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-primary-foreground">
-                <span className="text-3xl font-bold">{progress}%</span>
-                <span className="text-sm">of goal</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-3xl font-bold text-foreground">{progress}%</span>
+                <span className="text-sm text-muted-foreground">of goal</span>
               </div>
             </div>
           )}
 
-          <p className="text-xl">
+          <p className="text-xl text-foreground">
             {isHeartRate ? (
               `${statConfig.data.value}${unit}`
             ) : (
@@ -159,7 +158,7 @@ const StatDetail = () => {
           </p>
         </div>
 
-        {!isHeartRate && <h3 className="text-xl font-semibold mb-4">Overview</h3>}
+        {!isHeartRate && <h3 className="text-xl font-semibold text-foreground mb-4">Overview</h3>}
         
         {/* Change Cards - Only show for non-heart rate stats */}
         {!isHeartRate && (
@@ -170,14 +169,12 @@ const StatDetail = () => {
                 {Number(weeklyChange) >= 0 ? '+' : ''}{weeklyChange}%
               </p>
               <div className="h-16 mt-2 bg-muted rounded-lg relative overflow-hidden">
-                <div className="absolute bottom-0 left-0 w-full h-12 bg-muted-foreground/10">
-                  <svg className="w-full h-full" preserveAspectRatio="none">
-                    <path
-                      d="M0,50 Q25,30 50,40 T100,30 V50 H0"
-                      fill="hsl(var(--primary))"
-                    />
-                  </svg>
-                </div>
+                <svg className="w-full h-full" preserveAspectRatio="none">
+                  <path
+                    d="M0,50 Q25,30 50,40 T100,30 V50 H0"
+                    className={`${Number(weeklyChange) >= 0 ? 'fill-green-500' : 'fill-destructive'}`}
+                  />
+                </svg>
               </div>
             </div>
 
@@ -187,14 +184,12 @@ const StatDetail = () => {
                 {Number(monthlyChange) >= 0 ? '+' : ''}{monthlyChange}%
               </p>
               <div className="h-16 mt-2 bg-muted rounded-lg relative overflow-hidden">
-                <div className="absolute bottom-0 left-0 w-full h-12 bg-muted-foreground/10">
-                  <svg className="w-full h-full" preserveAspectRatio="none">
-                    <path
-                      d="M0,50 Q25,30 50,40 T100,30 V50 H0"
-                      fill="hsl(var(--primary))"
-                    />
-                  </svg>
-                </div>
+                <svg className="w-full h-full" preserveAspectRatio="none">
+                  <path
+                    d="M0,50 Q25,30 50,40 T100,30 V50 H0"
+                    className={`${Number(monthlyChange) >= 0 ? 'fill-green-500' : 'fill-destructive'}`}
+                  />
+                </svg>
               </div>
             </div>
           </div>

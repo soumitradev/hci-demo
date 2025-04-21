@@ -1,4 +1,3 @@
-import { X } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
@@ -58,53 +57,42 @@ export default function AddAssessmentModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit Assessment' : 'Add Assessment'}</DialogTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="absolute right-4 top-4 text-muted-foreground hover:text-foreground"
-          >
-            <X className="h-6 w-6" />
-          </Button>
+          <DialogTitle className="text-foreground">
+            {isEditing ? "Edit Assessment" : "Add New Assessment"}
+          </DialogTitle>
         </DialogHeader>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="type">Assessment Type</Label>
+            <Label htmlFor="type" className="text-foreground">Assessment Type</Label>
             <Input
-              type="text"
               id="type"
               value={type}
               onChange={(e) => setType(e.target.value)}
+              placeholder="Quiz, Test, etc."
               required
+              className="bg-background text-foreground"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
+            <Label htmlFor="date" className="text-foreground">Date</Label>
             <Input
-              type="date"
               id="date"
+              type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               required
+              className="bg-background text-foreground"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={onClose}
-            >
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={onClose} className="text-foreground">
               Cancel
             </Button>
-            <Button type="submit" variant="secondary">
-              {isEditing ? 'Save Changes' : 'Add Assessment'}
-            </Button>
+            <Button type="submit" variant="secondary">{isEditing ? "Update Assessment" : "Add Assessment"}</Button>
           </div>
         </form>
       </DialogContent>

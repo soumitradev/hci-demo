@@ -49,7 +49,6 @@ const groupOverlappingEvents = (events: Event[]) => {
 };
 
 const earliestHour = 8; // 8 AM
-const latestHour = 20; // 8 PM
 
 const calculateEventPosition = (event: Event) => {
   const [startHours, startMinutes] = event.startTime.split(':').map(Number);
@@ -66,18 +65,6 @@ const calculateEventPosition = (event: Event) => {
   return { top, height };
 };
 
-const getCategoryColor = (category: string) => {
-  switch (category) {
-    case 'CS F213':
-      return 'rgb(var(--blue-500))'; // blue-500
-    case 'CS F214':
-      return 'rgb(var(--emerald-500))'; // emerald-500
-    case 'CS F222':
-      return 'rgb(var(--violet-500))'; // violet-500
-    default:
-      return 'rgb(var(--gray-500))'; // gray-500
-  }
-};
 
 export default function TimetablePage() {
   const navigate = useNavigate();
@@ -179,8 +166,12 @@ export default function TimetablePage() {
               <Button
                 key={category}
                 onClick={() => toggleCategory(category)}
-                variant={selectedCategories.has(category) ? "secondary" : "ghost"}
-                className="whitespace-nowrap"
+                variant="ghost"
+                className={`whitespace-nowrap text-foreground hover:text-foreground ${
+                  selectedCategories.has(category) 
+                    ? 'bg-accent text-accent-foreground hover:bg-accent/90' 
+                    : 'hover:bg-accent/50'
+                }`}
               >
                 {category}
               </Button>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFinanceStore, TimePeriod, Category } from '../stores/financeStore';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -61,42 +61,42 @@ export default function FinanceReport() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-8">
           <Button 
             onClick={() => navigate('/finance')}
             variant="ghost"
             size="icon"
-            className="rounded-full"
+            className="rounded-full text-foreground hover:text-foreground"
           >
             <ChevronLeft className="h-7 w-7" />
           </Button>
           <h1 className="text-2xl font-bold text-foreground">Finance Report</h1>
         </div>
 
-        <h2 className="text-xl text-gray-900">Statistics</h2>
+        <h2 className="text-xl text-foreground">Statistics</h2>
 
         {/* Time Period Selector */}
         <div className="mt-4 grid grid-cols-3 gap-2">
           <Button 
             onClick={() => setSelectedPeriod('day')}
-            variant={selectedPeriod === 'day' ? 'secondary' : 'ghost'}
-            className={`w-full ${selectedPeriod === 'day' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
+            variant="ghost"
+            className={`w-full text-foreground hover:text-foreground ${selectedPeriod === 'day' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}`}
           >
             Day
           </Button>
           <Button 
             onClick={() => setSelectedPeriod('week')}
-            variant={selectedPeriod === 'week' ? 'secondary' : 'ghost'}
-            className={`w-full ${selectedPeriod === 'week' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
+            variant="ghost"
+            className={`w-full text-foreground hover:text-foreground ${selectedPeriod === 'week' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}`}
           >
             Week
           </Button>
           <Button 
             onClick={() => setSelectedPeriod('month')}
-            variant={selectedPeriod === 'month' ? 'secondary' : 'ghost'}
-            className={`w-full ${selectedPeriod === 'month' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
+            variant="ghost"
+            className={`w-full text-foreground hover:text-foreground ${selectedPeriod === 'month' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}`}
           >
             Month
           </Button>
@@ -121,8 +121,8 @@ export default function FinanceReport() {
                         }}
                       />
                     </div>
-                    <div className="text-sm text-gray-500">{item.label}</div>
-                    <div className="text-sm font-medium text-gray-900">₹{item.value}</div>
+                    <div className="text-sm text-muted-foreground">{item.label}</div>
+                    <div className="text-sm font-medium text-foreground">₹{item.value}</div>
                   </div>
                 );
               })}
@@ -132,16 +132,16 @@ export default function FinanceReport() {
 
         {/* Category Breakdown */}
         <div className="mt-12">
-          <h3 className="text-lg font-medium text-gray-900">Category wise Spending</h3>
-          <p className="text-gray-500 text-sm">This month's expenses</p>
+          <h3 className="text-lg font-medium text-foreground">Category wise Spending</h3>
+          <p className="text-muted-foreground text-sm">This month's expenses</p>
 
           <div className="mt-8 flex flex-col items-center">
             {/* Donut Chart */}
             <div className="relative w-48 h-48 mb-8">
               <Doughnut data={chartData} options={chartOptions} />
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <div className="text-sm text-gray-600">Total Spent</div>
-                <div className="text-2xl font-semibold">₹{totalSpent}</div>
+                <div className="text-sm text-muted-foreground">Total Spent</div>
+                <div className="text-2xl font-semibold text-foreground">₹{totalSpent}</div>
               </div>
             </div>
 
@@ -151,10 +151,10 @@ export default function FinanceReport() {
                 amount > 0 && (
                   <div 
                     key={category}
-                    className={`${categoryColors[category as Category].bg} px-4 py-2 rounded-full flex items-center gap-2`}
+                    className={`${categoryColors[category as Category].bg} px-4 py-2 rounded-full flex items-center gap-2 border`}
                   >
-                    <span className="text-sm">{category}</span>
-                    <span className="text-sm">₹{amount}</span>
+                    <span className={`text-sm font-medium ${categoryColors[category as Category].text}`}>{category}</span>
+                    <span className={`text-sm font-medium ${categoryColors[category as Category].text}`}>₹{amount}</span>
                   </div>
                 )
               ))}
