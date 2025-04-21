@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Footprints, Moon, Droplets, Heart, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fitnessStats } from '../data/fitnessData';

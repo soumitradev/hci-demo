@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Crown, Clock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Crown, Clock } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
 interface LeaderboardEntry {
@@ -66,7 +65,6 @@ const getTimeUntilEndOfWeek = () => {
 const Leaderboard: React.FC = () => {
   const [timeFilter, setTimeFilter] = useState<'weekly' | 'all'>('weekly');
   const [timeRemaining, setTimeRemaining] = useState(getTimeUntilEndOfWeek());
-  const navigate = useNavigate();
 
   const top3 = mockData.slice(0, 3);
   const restOfList = mockData.slice(3);

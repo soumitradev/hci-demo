@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronDown, ChevronRight, ChevronUp, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFinanceStore } from '../stores/financeStore';
@@ -19,7 +18,6 @@ export default function Finance() {
   const currentDailyRate = currentMonthSpending / dayOfMonth;
   const projectedMonthTotal = currentDailyRate * daysInCurrentMonth;
 
-  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const daysInLastMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
   const lastMonthDailyRate = lastMonthSpending / daysInLastMonth;
 

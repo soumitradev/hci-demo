@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { formatDate, calculateCourseProgress } from './utils'
+import { calculateCourseProgress } from './utils'
 
 export interface Assessment {
   type: string

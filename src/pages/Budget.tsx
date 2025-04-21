@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, AlertCircle, ArrowLeft, Pencil } from 'lucide-react';
 import { useFinanceStore, Category } from '../stores/financeStore';

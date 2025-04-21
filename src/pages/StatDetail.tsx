@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fitnessStats, type StatConfig } from '../data/fitnessData';
+import { fitnessStats } from '../data/fitnessData';
 
 const getProgressMessage = (statType: string, value: number, goal: number): { message: string; subtext: string } => {
   const progress = (value / goal) * 100;

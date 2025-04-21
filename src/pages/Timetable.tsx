@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Plus, ChevronLeft } from "lucide-react";
 import { useTimetableStore, Event } from "../stores/timetableStore";
 import { useNavigate } from 'react-router-dom';
@@ -197,7 +197,7 @@ export default function TimetablePage() {
 
               {/* Events */}
               <div className="absolute inset-0 px-1">
-                {eventGroups.map((group, groupIndex) => 
+                {eventGroups.map((group, _) => 
                   group.map((event, eventIndex) => {
                     // Convert event time to pixels (assuming 1 hour = 64px)
                     const [startHours, startMinutes] = event.startTime.split(':').map(Number);

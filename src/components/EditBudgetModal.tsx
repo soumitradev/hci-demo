@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { Category } from '../stores/financeStore';
 
 interface EditBudgetModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: string;
   currentBudget: number;
-  onUpdate: (category: string, newBudget: number) => void;
+  onUpdate: (category: Category, newBudget: number) => void;
 }
 
 const EditBudgetModal: React.FC<EditBudgetModalProps> = ({ isOpen, onClose, category, currentBudget, onUpdate }) => {
@@ -16,7 +17,7 @@ const EditBudgetModal: React.FC<EditBudgetModalProps> = ({ isOpen, onClose, cate
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onUpdate(category, newBudget);
+    onUpdate(category as Category, newBudget);
     onClose();
   };
 
