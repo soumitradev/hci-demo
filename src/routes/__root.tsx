@@ -13,7 +13,7 @@ export const Route = createRootRoute({
       <div className='max-w-sm px-3 mx-auto pb-16'>
         {pathname !== '/' && <Header />}
         <Outlet />
-        <NavigationMenu />
+        {pathname !== '/' && <NavigationMenu />}
       </div>
       <TanStackRouterDevtools />
     </>
