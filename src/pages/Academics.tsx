@@ -23,7 +23,7 @@ export default function Academics() {
             onClick={() => navigate('/timetable')}
             className="gap-2"
           >
-            Timetable
+            Today's Schedule
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>

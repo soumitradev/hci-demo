@@ -151,7 +151,7 @@ export default function TimetablePage() {
               >
                 <ChevronLeft className="h-7 w-7" />
               </Button>
-              <h1 className="text-2xl font-bold text-foreground">Timetable</h1>
+              <h1 className="text-2xl font-bold text-foreground">Today's Schedule</h1>
             </div>
             <Button 
               onClick={() => setIsAddModalOpen(true)}
