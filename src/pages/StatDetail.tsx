@@ -100,7 +100,6 @@ const StatDetail = () => {
     - statConfig.monthlyData[0].average) / statConfig.monthlyData[0].average * 100)).toFixed(0);
 
   const unit = statType === 'sleep' ? 'hrs' : (statType === 'steps' ? '' : statConfig.unit);
-  const isCalories = statType === 'heart';
 
   // Get accent color based on stat type
   const getAccentColor = (type: string) => {
