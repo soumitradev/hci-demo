@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/academics/')({
   component: RouteComponent,
@@ -9,25 +9,27 @@ export const Route = createFileRoute('/academics/')({
 
 
 function CourseCard(props: { name: string, code: string, progress: number, days: number, topic: string }) {
-  return <Card>
-    <CardHeader>
-      <CardTitle>
-        {props.code}
-      </CardTitle>
-      <CardDescription>
-        {props.name}
-      </CardDescription>
-    </CardHeader>
-    <CardContent>
-      <div className='flex items-center justify-center gap-2'>
-        <Progress value={props.progress} />
-        <span className='text-xs'>{props.progress}%</span>
-      </div>
-    </CardContent>
-    <CardFooter>
-      <span className={cn('text-sm', props.days <= 2 ? 'text-destructive' : props.days <= 7 && 'text-yellow-500')}>{props.topic} - {props.days} days left</span>
-    </CardFooter>
-  </Card>
+  return <Link to='/academics/course'>
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          {props.code}
+        </CardTitle>
+        <CardDescription>
+          {props.name}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className='flex items-center justify-center gap-2'>
+          <Progress value={props.progress} />
+          <span className='text-xs'>{props.progress}%</span>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <span className={cn('text-sm', props.days <= 2 ? 'text-destructive' : props.days <= 7 && 'text-yellow-500')}>{props.topic} - {props.days} days left</span>
+      </CardFooter>
+    </Card>
+  </Link>
 }
 
 function RouteComponent() {

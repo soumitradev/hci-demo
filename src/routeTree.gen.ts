@@ -18,6 +18,7 @@ import { Route as FitnessIndexImport } from './routes/fitness/index'
 import { Route as FinancesIndexImport } from './routes/finances/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as AcademicsIndexImport } from './routes/academics/index'
+import { Route as AcademicsCourseIndexImport } from './routes/academics/course/index'
 
 // Create/Update Routes
 
@@ -60,6 +61,12 @@ const DashboardIndexRoute = DashboardIndexImport.update({
 const AcademicsIndexRoute = AcademicsIndexImport.update({
   id: '/academics/',
   path: '/academics/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AcademicsCourseIndexRoute = AcademicsCourseIndexImport.update({
+  id: '/academics/course/',
+  path: '/academics/course/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -116,6 +123,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/academics/course/': {
+      id: '/academics/course/'
+      path: '/academics/course'
+      fullPath: '/academics/course'
+      preLoaderRoute: typeof AcademicsCourseIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -129,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/fitness': typeof FitnessIndexRoute
   '/leaderboard': typeof LeaderboardIndexRoute
   '/settings': typeof SettingsIndexRoute
+  '/academics/course': typeof AcademicsCourseIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -139,6 +154,7 @@ export interface FileRoutesByTo {
   '/fitness': typeof FitnessIndexRoute
   '/leaderboard': typeof LeaderboardIndexRoute
   '/settings': typeof SettingsIndexRoute
+  '/academics/course': typeof AcademicsCourseIndexRoute
 }
 
 export interface FileRoutesById {
@@ -150,6 +166,7 @@ export interface FileRoutesById {
   '/fitness/': typeof FitnessIndexRoute
   '/leaderboard/': typeof LeaderboardIndexRoute
   '/settings/': typeof SettingsIndexRoute
+  '/academics/course/': typeof AcademicsCourseIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -162,6 +179,7 @@ export interface FileRouteTypes {
     | '/fitness'
     | '/leaderboard'
     | '/settings'
+    | '/academics/course'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -171,6 +189,7 @@ export interface FileRouteTypes {
     | '/fitness'
     | '/leaderboard'
     | '/settings'
+    | '/academics/course'
   id:
     | '__root__'
     | '/'
@@ -180,6 +199,7 @@ export interface FileRouteTypes {
     | '/fitness/'
     | '/leaderboard/'
     | '/settings/'
+    | '/academics/course/'
   fileRoutesById: FileRoutesById
 }
 
@@ -191,6 +211,7 @@ export interface RootRouteChildren {
   FitnessIndexRoute: typeof FitnessIndexRoute
   LeaderboardIndexRoute: typeof LeaderboardIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
+  AcademicsCourseIndexRoute: typeof AcademicsCourseIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -201,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   FitnessIndexRoute: FitnessIndexRoute,
   LeaderboardIndexRoute: LeaderboardIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
+  AcademicsCourseIndexRoute: AcademicsCourseIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -219,7 +241,8 @@ export const routeTree = rootRoute
         "/finances/",
         "/fitness/",
         "/leaderboard/",
-        "/settings/"
+        "/settings/",
+        "/academics/course/"
       ]
     },
     "/": {
@@ -242,6 +265,9 @@ export const routeTree = rootRoute
     },
     "/settings/": {
       "filePath": "settings/index.tsx"
+    },
+    "/academics/course/": {
+      "filePath": "academics/course/index.tsx"
     }
   }
 }
