@@ -80,6 +80,16 @@ function RouteComponent() {
   return (
     <div className="min-h-screen bg-background pb-20">
       <main className="container mx-auto px-4 py-6 max-w-2xl">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold text-foreground">Overview</h2>
+          <Button 
+            onClick={() => navigate({ to: '/finances/report' })}
+            className="gap-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2"
+          >
+            See Report
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+        </div>
 
         {/* Spending Card */}
         <Card className="mt-2">
