@@ -159,47 +159,27 @@ function Home() {
             className="cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => navigate('/finance')}
           >
-            <CardContent className="p-4 flex justify-between items-center">
-              <div className="flex flex-col">
-                <h3 className="text-base font-medium">Monthly Spending</h3>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-lg font-medium">₹{currentMonthSpending.toLocaleString()}</span>
-                  <span className="text-sm text-muted-foreground">/ ₹{totalBudget.toLocaleString()}</span>
+            <CardContent className="p-4 pr-0">
+              <div className="flex items-start justify-between">
+                <div className="flex flex-col">
+                  <h3 className="text-base font-medium -mt-1">Monthly Spending</h3>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-lg font-medium">₹{currentMonthSpending.toLocaleString()}</span>
+                    <span className="text-sm text-muted-foreground">/ ₹{totalBudget.toLocaleString()}</span>
+                  </div>
                 </div>
-                <div 
-                  className="flex items-center mt-1 text-sm text-muted-foreground hover:text-foreground cursor-pointer"
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="h-6 text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1 px-2 -mt-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     navigate('/finance');
                   }}
                 >
                   View All
-                  <ArrowRight className="w-3 h-3 ml-1" />
-                </div>
-              </div>
-              <div className="relative w-24 h-24">
-                <svg className="w-full h-full" viewBox="0 0 36 36">
-                  <path
-                    d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="hsl(var(--muted))"
-                    strokeWidth="3"
-                  />
-                  <path
-                    d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth="3"
-                    strokeDasharray={`${(currentMonthSpending / totalBudget) * 100}, 100`}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-base font-semibold">{Math.round((currentMonthSpending / totalBudget) * 100)}%</span>
-                </div>
+                  <ArrowRight className="w-3 h-3" />
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -209,7 +189,7 @@ function Home() {
             className="md:col-span-2 cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => navigate('/timetable')}
           >
-            <CardContent className="p-4">
+            <CardContent className="p-4 pr-0">
               <div className="flex items-center justify-between -mt-1.5">
                 <h3 className="text-base font-medium">Today's Schedule</h3>
                 <Button 
