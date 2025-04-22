@@ -9,7 +9,7 @@ export default function Header() {
       <Button onClick={() => router.history.back()} size="icon" variant="ghost">
         <LucideArrowLeft />
       </Button>
-      <span>Lex</span>
+      <span></span>
     </div>
   </header>
 }
