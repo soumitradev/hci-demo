@@ -1,4 +1,6 @@
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardTitle } from '@/components/ui/card'
+import { ShineBorder } from '@/components/ui/shine-border'
 import { createFileRoute } from '@tanstack/react-router'
 import { LucideBook, LucideHeartPulse, LucideWallet } from 'lucide-react'
 
@@ -16,6 +18,14 @@ function RouteComponent() {
     </p>
     <br />
     <div className='grid grid-cols-2 gap-4'>
+
+      <Alert className='relative overflow-hidden col-span-2'>
+        <ShineBorder shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]} />
+        <AlertTitle className='text-lg'>#4</AlertTitle>
+        <AlertDescription className='inline'>
+          You're are doing better than <b>93%</b> of other students!
+        </AlertDescription>
+      </Alert>
       <Card className='p-4'>
         <div className='flex justify-between items-center'>
           <LucideHeartPulse className='size-8' />
