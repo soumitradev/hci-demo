@@ -77,9 +77,8 @@ export default function Finance() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold text-foreground">Overview</h2>
           <Button 
-            variant="secondary"
             onClick={() => navigate('/finance/report')}
-            className="gap-2"
+            className="gap-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2"
           >
             See Report
             <ArrowRight className="w-4 h-4" />
@@ -120,8 +119,7 @@ export default function Finance() {
         <div className="mt-4">
           <Button 
             onClick={() => navigate('/finance/budget')}
-            variant="secondary"
-            className="w-full justify-between gap-2"
+            className="w-full justify-between gap-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2"
           >
             <span>See your budget</span>
             <ArrowRight className="w-4 h-4" />
