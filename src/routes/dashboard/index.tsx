@@ -58,21 +58,23 @@ function RouteComponent() {
           <CardTitle>Finances</CardTitle>
         </Card>
       </Link>
-      <Card className='p-4 col-span-2'>
-        <CardTitle>Today's Schedule</CardTitle>
-        <div className='grid grid-cols-2 items-center gap-2'>
-          <span>14:00</span>
-          <div>
-            <p>CS F213 L2</p>
-            <span className='text-sm text-muted-foreground'>F105</span>
+      <Link to='/timetable' className='col-span-2'>
+        <Card className='p-4'>
+          <CardTitle>Today's Schedule</CardTitle>
+          <div className='grid grid-cols-2 items-center gap-2'>
+            <span>14:00</span>
+            <div>
+              <p>CS F213 L2</p>
+              <span className='text-sm text-muted-foreground'>F105</span>
+            </div>
+            <span>15:00</span>
+            <div>
+              <p>ISRO Panel Talk</p>
+              <span className='text-sm text-muted-foreground'>F102</span>
+            </div>
           </div>
-          <span>15:00</span>
-          <div>
-            <p>ISRO Panel Talk</p>
-            <span className='text-sm text-muted-foreground'>F102</span>
-          </div>
-        </div>
-      </Card>
+        </Card>
+      </Link>
     </div>
   </div>
 }
