@@ -101,15 +101,9 @@ export default function Finance() {
               <div className="text-right">
                 <div className="flex items-center gap-1 justify-end">
                   {percentageChange > 0 ? (
-                    <>
-                      <ChevronDown className="text-destructive w-4 h-4" />
-                      <span className="text-destructive text-sm">+{Math.abs(percentageChange).toFixed(1)}%</span>
-                    </>
+                    <span className="text-destructive text-sm">+{Math.abs(percentageChange).toFixed(1)}%</span>
                   ) : (
-                    <>
-                      <ChevronUp className="text-emerald-400 w-4 h-4" />
-                      <span className="text-emerald-400 text-sm">-{Math.abs(percentageChange).toFixed(1)}%</span>
-                    </>
+                    <span className="text-emerald-400 text-sm">-{Math.abs(percentageChange).toFixed(1)}%</span>
                   )}
                 </div>
                 <span className="text-primary-foreground/60 text-xs">vs. last month</span>
