@@ -1,4 +1,4 @@
-import { LucideBook, LucideHeartPulse, LucideHouse, LucideSettings, LucideTrophy, LucideWallet } from 'lucide-react'
+import { LucideBook, LucideCalendar, LucideHeartPulse, LucideHouse, LucideSettings, LucideTrophy, LucideWallet } from 'lucide-react'
 import { MenuBar } from './ui/bottom-menu'
 
 export default function NavigationMenu() {
@@ -11,20 +11,22 @@ export default function NavigationMenu() {
     icon: () => <LucideBook />,
     label: 'Academics',
     to: "/academics",
-
-  }, {
-    icon: () => <LucideWallet />,
-    label: "Finances",
-    to: "/finances",
   }, {
     icon: () => <LucideHeartPulse />,
     label: "Fitness",
     to: "/fitness",
   }, {
+    icon: () => <LucideWallet />,
+    label: "Finances",
+    to: "/finances",
+  }, {
+    icon: () => <LucideCalendar />,
+    label: 'Timetable',
+    to: "/timetable",
+  }, {
     icon: () => <LucideTrophy />,
     label: "Leaderboard",
     to: "/leaderboard",
-
   }, {
     icon: () => <LucideSettings />,
     label: "Settings",
