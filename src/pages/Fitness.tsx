@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Footprints, Moon, Droplets, Heart, ChevronLeft } from 'lucide-react';
+import { Footprints, Moon, Droplets, Flame, ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { fitnessStats } from '../data/fitnessData';
 import { Button } from '../components/ui/button';
@@ -99,7 +99,7 @@ const Fitness: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-lg font-medium">Walk</span>
-              <Footprints className="w-5 h-5" />
+              <Footprints className="w-5 h-5 text-blue-500" />
             </div>
             <div className="relative w-full aspect-square mb-2">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -108,13 +108,13 @@ const Fitness: React.FC = () => {
                   cy="50"
                   r="40"
                   className="stroke-[8] fill-none"
-                  stroke="hsl(var(--primary) / 0.2)"
+                  stroke="hsl(217 91% 60% / 0.2)"
                 />
                 <circle
                   cx="50"
                   cy="50"
                   r="40"
-                  className="stroke-[8] fill-none stroke-[hsl(var(--primary))]"
+                  className="stroke-[8] fill-none stroke-blue-500"
                   strokeDasharray={251.2}
                   strokeDashoffset={251.2 - (currentStats.steps / fitnessStats.steps.goal) * 251.2}
                 />
@@ -133,7 +133,7 @@ const Fitness: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-lg font-medium">Sleep</span>
-              <Moon className="w-5 h-5" />
+              <Moon className="w-5 h-5 text-purple-500" />
             </div>
             <div className="relative w-full aspect-square mb-2">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -142,13 +142,13 @@ const Fitness: React.FC = () => {
                   cy="50"
                   r="40"
                   className="stroke-[8] fill-none"
-                  stroke="hsl(var(--primary) / 0.2)"
+                  stroke="hsl(271 91% 65% / 0.2)"
                 />
                 <circle
                   cx="50"
                   cy="50"
                   r="40"
-                  className="stroke-[8] fill-none stroke-[hsl(var(--primary))]"
+                  className="stroke-[8] fill-none stroke-purple-500"
                   strokeDasharray={251.2}
                   strokeDashoffset={251.2 - (currentStats.sleep / fitnessStats.sleep.goal) * 251.2}
                 />
@@ -167,7 +167,7 @@ const Fitness: React.FC = () => {
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-lg font-medium">Water</span>
-              <Droplets className="w-5 h-5" />
+              <Droplets className="w-5 h-5 text-cyan-500" />
             </div>
             <div className="relative w-full aspect-square mb-2">
               <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
@@ -176,13 +176,13 @@ const Fitness: React.FC = () => {
                   cy="50"
                   r="40"
                   className="stroke-[8] fill-none"
-                  stroke="hsl(var(--primary) / 0.2)"
+                  stroke="hsl(186 91% 50% / 0.2)"
                 />
                 <circle
                   cx="50"
                   cy="50"
                   r="40"
-                  className="stroke-[8] fill-none stroke-[hsl(var(--primary))]"
+                  className="stroke-[8] fill-none stroke-cyan-500"
                   strokeDasharray={251.2}
                   strokeDashoffset={251.2 - (currentStats.water / fitnessStats.water.goal) * 251.2}
                 />
@@ -194,22 +194,36 @@ const Fitness: React.FC = () => {
             </div>
           </Card>
 
-          {/* Heart Rate Card */}
+          {/* Calories Card */}
           <Card
             className="p-4 hover:bg-accent transition-colors cursor-pointer"
             onClick={() => navigate('/fitness/heart')}
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-lg font-medium">Heart</span>
-              <Heart className="w-5 h-5" />
+              <span className="text-lg font-medium">Calories</span>
+              <Flame className="w-5 h-5 text-orange-500" />
             </div>
-            <div className="relative w-full aspect-square flex items-center justify-center">
-              <div className="flex flex-col items-center justify-center">
-                <Heart className="w-12 h-12 text-[hsl(var(--primary))] mb-2" />
-                <div className="text-center">
-                  <span className="text-2xl font-bold text-foreground">{currentStats.heartRate}</span>
-                  <span className="text-xs text-muted-foreground ml-1">BPM</span>
-                </div>
+            <div className="relative w-full aspect-square mb-2">
+              <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  className="stroke-[8] fill-none"
+                  stroke="hsl(24 95% 50% / 0.2)"
+                />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  className="stroke-[8] fill-none stroke-orange-500"
+                  strokeDasharray={251.2}
+                  strokeDashoffset={251.2 - (currentStats.heartRate / fitnessStats.heart.goal) * 251.2}
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-2xl font-bold text-foreground">{currentStats.heartRate}</span>
+                <span className="text-xs text-muted-foreground">kcal</span>
               </div>
             </div>
           </Card>

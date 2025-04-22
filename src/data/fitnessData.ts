@@ -98,21 +98,21 @@ export const fitnessStats: Record<string, StatConfig> = {
     ]
   },
   'heart': {
-    title: 'Heart Rate',
+    title: 'Calories',
     data: {
-      value: 69, // Today's value
+      value: 2250, // Today's value
     },
-    unit: 'bpm',
-    goal: 100,
+    unit: 'kcal',
+    goal: 2500,
     weeklyData: dates.map((date, i) => ({
       date,
-      value: [72, 75, 68, 70, 73, 71, 69][i]
+      value: [2100, 2200, 2300, 2350, 2400, 2450, 2250][i] // Progressive increase showing effort
     })),
     monthlyData: [
-      { week: 1, average: 72 },
-      { week: 2, average: 71 },
-      { week: 3, average: 70 },
-      { week: 4, average: 73 }
+      { week: 1, average: 2150 },
+      { week: 2, average: 2250 },
+      { week: 3, average: 2350 },
+      { week: 4, average: 2400 }
     ]
   }
 }; 

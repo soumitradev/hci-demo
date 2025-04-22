@@ -50,17 +50,17 @@ const getProgressMessage = (statType: string, value: number, goal: number): { me
       };
 
     case 'heart':
-      if (value >= 60 && value <= 100) return { 
-        message: "Perfect Range", 
-        subtext: "Your heart rate is ideal" 
+      if (progress >= 95) return { 
+        message: "Great Progress!", 
+        subtext: "You're crushing your calorie goal" 
       };
-      if (value < 60) return { 
-        message: "Low Heart Rate", 
-        subtext: "Your heart rate is below normal" 
+      if (progress >= 75) return { 
+        message: "Keep Going!", 
+        subtext: `${goal - value} more calories to burn` 
       };
       return { 
-        message: "High Heart Rate", 
-        subtext: "Try to relax a bit" 
+        message: "Time to Move", 
+        subtext: `${goal - value} calories remaining today` 
       };
 
     default:
@@ -100,7 +100,41 @@ const StatDetail = () => {
     - statConfig.monthlyData[0].average) / statConfig.monthlyData[0].average * 100)).toFixed(0);
 
   const unit = statType === 'sleep' ? 'hrs' : (statType === 'steps' ? '' : statConfig.unit);
-  const isHeartRate = statType === 'heart';
+  const isCalories = statType === 'heart';
+
+  // Get accent color based on stat type
+  const getAccentColor = (type: string) => {
+    switch (type) {
+      case 'steps':
+        return 'rgb(59, 130, 246)'; // blue-500
+      case 'sleep':
+        return 'rgb(168, 85, 247)'; // purple-500
+      case 'water':
+        return 'rgb(6, 182, 212)';  // cyan-500
+      case 'heart':
+        return 'rgb(249, 115, 22)'; // orange-500
+      default:
+        return 'hsl(var(--primary))';
+    }
+  };
+
+  const getAccentColorWithOpacity = (type: string) => {
+    switch (type) {
+      case 'steps':
+        return 'rgba(59, 130, 246, 0.2)';
+      case 'sleep':
+        return 'rgba(168, 85, 247, 0.2)';
+      case 'water':
+        return 'rgba(6, 182, 212, 0.2)';
+      case 'heart':
+        return 'rgba(249, 115, 22, 0.2)';
+      default:
+        return 'hsl(var(--primary) / 0.2)';
+    }
+  };
+
+  const accentColor = getAccentColor(statType);
+  const accentColorBg = getAccentColorWithOpacity(statType);
 
   return (
     <div className="min-h-screen bg-background">
@@ -122,80 +156,72 @@ const StatDetail = () => {
           <h2 className="text-2xl font-semibold mb-1 text-foreground">{message}</h2>
           <p className="text-muted-foreground mb-8">{subtext}</p>
           
-          {!isHeartRate && (
-            <div className="relative w-32 h-32 mx-auto mb-8">
-              <svg className="w-full h-full -rotate-90">
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="60"
-                  className="stroke-[8] fill-none"
-                  stroke="hsl(var(--primary) / 0.2)"
-                />
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="60"
-                  className="stroke-[8] fill-none"
-                  stroke="hsl(var(--primary))"
-                  strokeDasharray={377}
-                  strokeDashoffset={377 - (progress / 100) * 377}
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold text-foreground">{progress}%</span>
-                <span className="text-sm text-muted-foreground">of goal</span>
-              </div>
+          <div className="relative w-32 h-32 mx-auto mb-8">
+            <svg className="w-full h-full -rotate-90">
+              <circle
+                cx="64"
+                cy="64"
+                r="60"
+                className="stroke-[8] fill-none"
+                style={{ stroke: accentColorBg }}
+              />
+              <circle
+                cx="64"
+                cy="64"
+                r="60"
+                className="stroke-[8] fill-none"
+                style={{ stroke: accentColor }}
+                strokeDasharray={377}
+                strokeDashoffset={377 - (progress / 100) * 377}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-3xl font-bold text-foreground">{progress}%</span>
+              <span className="text-sm text-muted-foreground">of goal</span>
             </div>
-          )}
+          </div>
 
           <p className="text-xl text-foreground">
-            {isHeartRate ? (
-              `${statConfig.data.value}${unit}`
-            ) : (
-              `${formatValue(statConfig.data.value, statType)}${unit} / ${formatValue(statConfig.goal, statType)}${unit}`
-            )}
+            {`${formatValue(statConfig.data.value, statType)}${unit} / ${formatValue(statConfig.goal, statType)}${unit}`}
           </p>
         </div>
 
-        {!isHeartRate && <h3 className="text-xl font-semibold text-foreground mb-4">Overview</h3>}
+        <h3 className="text-xl font-semibold text-foreground mb-4">Overview</h3>
         
-        {/* Change Cards - Only show for non-heart rate stats */}
-        {!isHeartRate && (
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="bg-card rounded-xl p-4 shadow-sm">
-              <p className="text-sm text-muted-foreground mb-2">Weekly Change</p>
-              <p className={`text-xl font-bold ${Number(weeklyChange) >= 0 ? 'text-green-500' : 'text-destructive'}`}>
-                {Number(weeklyChange) >= 0 ? '+' : ''}{weeklyChange}%
-              </p>
-              <div className="h-16 mt-2 bg-muted rounded-lg relative overflow-hidden">
-                <svg className="w-full h-full" preserveAspectRatio="none">
-                  <path
-                    d="M0,50 Q25,30 50,40 T100,30 V50 H0"
-                    className={`${Number(weeklyChange) >= 0 ? 'fill-green-500' : 'fill-destructive'}`}
-                  />
-                </svg>
-              </div>
-            </div>
-
-            <div className="bg-card rounded-xl p-4 shadow-sm">
-              <p className="text-sm text-muted-foreground mb-2">Monthly Change</p>
-              <p className={`text-xl font-bold ${Number(monthlyChange) >= 0 ? 'text-green-500' : 'text-destructive'}`}>
-                {Number(monthlyChange) >= 0 ? '+' : ''}{monthlyChange}%
-              </p>
-              <div className="h-16 mt-2 bg-muted rounded-lg relative overflow-hidden">
-                <svg className="w-full h-full" preserveAspectRatio="none">
-                  <path
-                    d="M0,50 Q25,30 50,40 T100,30 V50 H0"
-                    className={`${Number(monthlyChange) >= 0 ? 'fill-green-500' : 'fill-destructive'}`}
-                  />
-                </svg>
-              </div>
+        {/* Change Cards */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="bg-card rounded-xl p-4 shadow-sm">
+            <p className="text-sm text-muted-foreground mb-2">Weekly Change</p>
+            <p className={`text-xl font-bold ${Number(weeklyChange) >= 0 ? 'text-green-500' : 'text-destructive'}`}>
+              {Number(weeklyChange) >= 0 ? '+' : ''}{weeklyChange}%
+            </p>
+            <div className="h-16 mt-2 bg-muted rounded-lg relative overflow-hidden">
+              <svg className="w-full h-full" preserveAspectRatio="none">
+                <path
+                  d="M0,50 Q25,30 50,40 T100,30 V50 H0"
+                  className={`${Number(weeklyChange) >= 0 ? 'fill-green-500' : 'fill-destructive'}`}
+                />
+              </svg>
             </div>
           </div>
-        )}
 
-        {/* Weekly Overview - Show for all stats including heart rate */}
+          <div className="bg-card rounded-xl p-4 shadow-sm">
+            <p className="text-sm text-muted-foreground mb-2">Monthly Change</p>
+            <p className={`text-xl font-bold ${Number(monthlyChange) >= 0 ? 'text-green-500' : 'text-destructive'}`}>
+              {Number(monthlyChange) >= 0 ? '+' : ''}{monthlyChange}%
+            </p>
+            <div className="h-16 mt-2 bg-muted rounded-lg relative overflow-hidden">
+              <svg className="w-full h-full" preserveAspectRatio="none">
+                <path
+                  d="M0,50 Q25,30 50,40 T100,30 V50 H0"
+                  className={`${Number(monthlyChange) >= 0 ? 'fill-green-500' : 'fill-destructive'}`}
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Weekly Overview */}
         <>
           <h3 className="text-xl font-semibold mb-4">Weekly Overview</h3>
           <div className="grid grid-cols-5 gap-4">
@@ -215,7 +241,7 @@ const StatDetail = () => {
                       className="w-4 transition-all duration-300"
                       style={{ 
                         height: `${heightPercent}%`,
-                        backgroundColor: 'hsl(var(--primary))'
+                        backgroundColor: accentColor
                       }}
                     />
                   </div>

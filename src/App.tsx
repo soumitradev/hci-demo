@@ -74,7 +74,7 @@ function Home() {
                         a 15.9155 15.9155 0 0 1 0 31.831
                         a 15.9155 15.9155 0 0 1 0 -31.831"
                       fill="none"
-                      stroke="hsl(var(--muted))"
+                      stroke="hsl(217 91% 60% / 0.2)"
                       strokeWidth="3"
                     />
                     <path
@@ -82,13 +82,13 @@ function Home() {
                         a 15.9155 15.9155 0 0 1 0 31.831
                         a 15.9155 15.9155 0 0 1 0 -31.831"
                       fill="none"
-                      stroke="hsl(var(--primary))"
+                      stroke="hsl(217 91% 60%)"
                       strokeWidth="3"
                       strokeDasharray={`${(currentSteps / stepsGoal) * 100}, 100`}
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-xl font-semibold">{Math.round((currentSteps / stepsGoal) * 100)}%</span>
+                    <span className="text-xl font-semibold text-foreground">{Math.round((currentSteps / stepsGoal) * 100)}%</span>
                     <span className="text-sm text-muted-foreground">Steps</span>
                   </div>
                 </div>
