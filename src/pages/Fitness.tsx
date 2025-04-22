@@ -203,11 +203,13 @@ const Fitness: React.FC = () => {
               <span className="text-lg font-medium">Heart</span>
               <Heart className="w-5 h-5" />
             </div>
-            <div className="h-24 flex flex-col items-center justify-center">
-              <Heart className="w-12 h-12 text-[hsl(var(--primary))] mb-2" />
-              <div className="text-center">
-                <span className="text-2xl font-bold text-foreground">{currentStats.heartRate}</span>
-                <span className="text-xs text-muted-foreground ml-1">BPM</span>
+            <div className="relative w-full aspect-square flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center">
+                <Heart className="w-12 h-12 text-[hsl(var(--primary))] mb-2" />
+                <div className="text-center">
+                  <span className="text-2xl font-bold text-foreground">{currentStats.heartRate}</span>
+                  <span className="text-xs text-muted-foreground ml-1">BPM</span>
+                </div>
               </div>
             </div>
           </Card>
