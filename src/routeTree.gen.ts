@@ -23,6 +23,9 @@ import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as AcademicsIndexImport } from './routes/academics/index'
 import { Route as FitnessrouteImport } from './routes/fitness/__route'
 import { Route as FitnessStatTypeImport } from './routes/fitness/$statType'
+import { Route as FinancesReportImport } from './routes/finances/report'
+import { Route as FinancesBudgetImport } from './routes/finances/budget'
+import { Route as FinancesAllImport } from './routes/finances/all'
 import { Route as AcademicsCourseIndexImport } from './routes/academics/course/index'
 
 // Create Virtual Routes
@@ -96,6 +99,24 @@ const FitnessStatTypeRoute = FitnessStatTypeImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const FinancesReportRoute = FinancesReportImport.update({
+  id: '/finances/report',
+  path: '/finances/report',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FinancesBudgetRoute = FinancesBudgetImport.update({
+  id: '/finances/budget',
+  path: '/finances/budget',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FinancesAllRoute = FinancesAllImport.update({
+  id: '/finances/all',
+  path: '/finances/all',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AcademicsCourseIndexRoute = AcademicsCourseIndexImport.update({
   id: '/academics/course/',
   path: '/academics/course/',
@@ -111,6 +132,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/finances/all': {
+      id: '/finances/all'
+      path: '/finances/all'
+      fullPath: '/finances/all'
+      preLoaderRoute: typeof FinancesAllImport
+      parentRoute: typeof rootRoute
+    }
+    '/finances/budget': {
+      id: '/finances/budget'
+      path: '/finances/budget'
+      fullPath: '/finances/budget'
+      preLoaderRoute: typeof FinancesBudgetImport
+      parentRoute: typeof rootRoute
+    }
+    '/finances/report': {
+      id: '/finances/report'
+      path: '/finances/report'
+      fullPath: '/finances/report'
+      preLoaderRoute: typeof FinancesReportImport
       parentRoute: typeof rootRoute
     }
     '/fitness/$statType': {
@@ -210,6 +252,9 @@ const FitnessRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/finances/all': typeof FinancesAllRoute
+  '/finances/budget': typeof FinancesBudgetRoute
+  '/finances/report': typeof FinancesReportRoute
   '/fitness/$statType': typeof FitnessStatTypeRoute
   '/fitness': typeof FitnessrouteRoute
   '/academics': typeof AcademicsIndexRoute
@@ -224,6 +269,9 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/finances/all': typeof FinancesAllRoute
+  '/finances/budget': typeof FinancesBudgetRoute
+  '/finances/report': typeof FinancesReportRoute
   '/fitness/$statType': typeof FitnessStatTypeRoute
   '/fitness': typeof FitnessIndexRoute
   '/academics': typeof AcademicsIndexRoute
@@ -238,6 +286,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/finances/all': typeof FinancesAllRoute
+  '/finances/budget': typeof FinancesBudgetRoute
+  '/finances/report': typeof FinancesReportRoute
   '/fitness/$statType': typeof FitnessStatTypeRoute
   '/fitness': typeof FitnessRouteWithChildren
   '/fitness/__route': typeof FitnessrouteRoute
@@ -255,6 +306,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/finances/all'
+    | '/finances/budget'
+    | '/finances/report'
     | '/fitness/$statType'
     | '/fitness'
     | '/academics'
@@ -268,6 +322,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/finances/all'
+    | '/finances/budget'
+    | '/finances/report'
     | '/fitness/$statType'
     | '/fitness'
     | '/academics'
@@ -280,6 +337,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/finances/all'
+    | '/finances/budget'
+    | '/finances/report'
     | '/fitness/$statType'
     | '/fitness'
     | '/fitness/__route'
@@ -296,6 +356,9 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FinancesAllRoute: typeof FinancesAllRoute
+  FinancesBudgetRoute: typeof FinancesBudgetRoute
+  FinancesReportRoute: typeof FinancesReportRoute
   FitnessStatTypeRoute: typeof FitnessStatTypeRoute
   FitnessRoute: typeof FitnessRouteWithChildren
   AcademicsIndexRoute: typeof AcademicsIndexRoute
@@ -309,6 +372,9 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FinancesAllRoute: FinancesAllRoute,
+  FinancesBudgetRoute: FinancesBudgetRoute,
+  FinancesReportRoute: FinancesReportRoute,
   FitnessStatTypeRoute: FitnessStatTypeRoute,
   FitnessRoute: FitnessRouteWithChildren,
   AcademicsIndexRoute: AcademicsIndexRoute,
@@ -331,6 +397,9 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/finances/all",
+        "/finances/budget",
+        "/finances/report",
         "/fitness/$statType",
         "/fitness",
         "/academics/",
@@ -344,6 +413,15 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/finances/all": {
+      "filePath": "finances/all.tsx"
+    },
+    "/finances/budget": {
+      "filePath": "finances/budget.tsx"
+    },
+    "/finances/report": {
+      "filePath": "finances/report.tsx"
     },
     "/fitness/$statType": {
       "filePath": "fitness/$statType.tsx"
