@@ -15,6 +15,9 @@ import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/academics/course/')({
   component: RouteComponent,
+  staticData: {
+    title: 'Course',
+  },
 })
 
 function HandoutProgress() {

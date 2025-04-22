@@ -6,6 +6,9 @@ import { LucideBook, LucideHeartPulse, LucideWallet } from 'lucide-react'
 
 export const Route = createFileRoute('/dashboard/')({
   component: RouteComponent,
+  staticData: {
+    title: 'Dashboard',
+  }
 })
 
 function RouteComponent() {

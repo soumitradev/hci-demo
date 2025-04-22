@@ -5,6 +5,9 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/academics/')({
   component: RouteComponent,
+  staticData: {
+    title: 'Academics',
+  },
 })
 
 

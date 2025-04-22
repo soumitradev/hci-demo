@@ -8,7 +8,7 @@ export const Route = createFileRoute('/')({
 
 function App() {
   return (
-    <main className='flex flex-col items-center justify-center min-h-svh'>
+    <main className='flex flex-col items-center justify-center min-h-[85svh]'>
       <h1 className='text-6xl'>Lex</h1>
       <br />
       <Button>
