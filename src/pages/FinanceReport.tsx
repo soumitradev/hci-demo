@@ -84,21 +84,21 @@ export default function FinanceReport() {
             variant="ghost"
             className={`w-full text-foreground hover:text-foreground ${selectedPeriod === 'day' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}`}
           >
-            Day
+            Week
           </Button>
           <Button 
             onClick={() => setSelectedPeriod('week')}
             variant="ghost"
             className={`w-full text-foreground hover:text-foreground ${selectedPeriod === 'week' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}`}
           >
-            Week
+            Month
           </Button>
           <Button 
             onClick={() => setSelectedPeriod('month')}
             variant="ghost"
             className={`w-full text-foreground hover:text-foreground ${selectedPeriod === 'month' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : ''}`}
           >
-            Month
+            Year
           </Button>
         </div>
 
