@@ -460,7 +460,7 @@ function RouteComponent() {
             />
             <div className="text-center mb-1">
               <p className="text-foreground font-medium">{top3[1].name}</p>
-              <p className="text-primary text-sm font-medium">{getPoints(top3[1]).toLocaleString()} points</p>
+              <p className="text-primary text-sm font-medium">{getPoints(top3[1]).toLocaleString()} PP</p>
             </div>
             <div className="w-full h-20 bg-muted rounded-t-lg relative">
               <span className="absolute top-2 left-1/2 -translate-x-1/2 text-muted-foreground font-semibold">2</span>
@@ -477,7 +477,7 @@ function RouteComponent() {
             />
             <div className="text-center mb-1">
               <p className="text-foreground font-medium">{top3[0].name}</p>
-              <p className="text-primary text-sm font-medium">{getPoints(top3[0]).toLocaleString()} points</p>
+              <p className="text-primary text-sm font-medium">{getPoints(top3[0]).toLocaleString()} PP</p>
             </div>
             <div className="w-full h-24 bg-yellow-100 rounded-t-lg relative">
               <span className="absolute top-2 left-1/2 -translate-x-1/2 text-yellow-600 font-semibold">1</span>
@@ -493,7 +493,7 @@ function RouteComponent() {
             />
             <div className="text-center mb-1">
               <p className="text-foreground font-medium">{top3[2].name}</p>
-              <p className="text-primary text-sm font-medium">{getPoints(top3[2]).toLocaleString()} points</p>
+              <p className="text-primary text-sm font-medium">{getPoints(top3[2]).toLocaleString()} PP</p>
             </div>
             <div className="w-full h-16 bg-orange-100 rounded-t-lg relative">
               <span className="absolute top-2 left-1/2 -translate-x-1/2 text-orange-600 font-semibold">3</span>
@@ -517,7 +517,7 @@ function RouteComponent() {
                 />
                 <div>
                   <p className="text-foreground font-medium">{entry.name}</p>
-                  <p className="text-primary text-sm font-medium">{getPoints(entry).toLocaleString()} points</p>
+                  <p className="text-primary text-sm font-medium">{getPoints(entry).toLocaleString()} PP</p>
                 </div>
               </div>
             </Card>
