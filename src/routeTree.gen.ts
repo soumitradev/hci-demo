@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
@@ -19,9 +21,21 @@ import { Route as FitnessIndexImport } from './routes/fitness/index'
 import { Route as FinancesIndexImport } from './routes/finances/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as AcademicsIndexImport } from './routes/academics/index'
+import { Route as FitnessrouteImport } from './routes/fitness/__route'
+import { Route as FitnessStatTypeImport } from './routes/fitness/$statType'
 import { Route as AcademicsCourseIndexImport } from './routes/academics/course/index'
 
+// Create Virtual Routes
+
+const FitnessImport = createFileRoute('/fitness')()
+
 // Create/Update Routes
+
+const FitnessRoute = FitnessImport.update({
+  id: '/fitness',
+  path: '/fitness',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -48,9 +62,9 @@ const LeaderboardIndexRoute = LeaderboardIndexImport.update({
 } as any)
 
 const FitnessIndexRoute = FitnessIndexImport.update({
-  id: '/fitness/',
-  path: '/fitness/',
-  getParentRoute: () => rootRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => FitnessRoute,
 } as any)
 
 const FinancesIndexRoute = FinancesIndexImport.update({
@@ -71,6 +85,17 @@ const AcademicsIndexRoute = AcademicsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const FitnessrouteRoute = FitnessrouteImport.update({
+  id: '/__route',
+  getParentRoute: () => FitnessRoute,
+} as any)
+
+const FitnessStatTypeRoute = FitnessStatTypeImport.update({
+  id: '/fitness/$statType',
+  path: '/fitness/$statType',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AcademicsCourseIndexRoute = AcademicsCourseIndexImport.update({
   id: '/academics/course/',
   path: '/academics/course/',
@@ -87,6 +112,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
+    }
+    '/fitness/$statType': {
+      id: '/fitness/$statType'
+      path: '/fitness/$statType'
+      fullPath: '/fitness/$statType'
+      preLoaderRoute: typeof FitnessStatTypeImport
+      parentRoute: typeof rootRoute
+    }
+    '/fitness': {
+      id: '/fitness'
+      path: '/fitness'
+      fullPath: '/fitness'
+      preLoaderRoute: typeof FitnessImport
+      parentRoute: typeof rootRoute
+    }
+    '/fitness/__route': {
+      id: '/fitness/__route'
+      path: '/fitness'
+      fullPath: '/fitness'
+      preLoaderRoute: typeof FitnessrouteImport
+      parentRoute: typeof FitnessRoute
     }
     '/academics/': {
       id: '/academics/'
@@ -111,10 +157,10 @@ declare module '@tanstack/react-router' {
     }
     '/fitness/': {
       id: '/fitness/'
-      path: '/fitness'
-      fullPath: '/fitness'
+      path: '/'
+      fullPath: '/fitness/'
       preLoaderRoute: typeof FitnessIndexImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof FitnessImport
     }
     '/leaderboard/': {
       id: '/leaderboard/'
@@ -149,12 +195,27 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface FitnessRouteChildren {
+  FitnessrouteRoute: typeof FitnessrouteRoute
+  FitnessIndexRoute: typeof FitnessIndexRoute
+}
+
+const FitnessRouteChildren: FitnessRouteChildren = {
+  FitnessrouteRoute: FitnessrouteRoute,
+  FitnessIndexRoute: FitnessIndexRoute,
+}
+
+const FitnessRouteWithChildren =
+  FitnessRoute._addFileChildren(FitnessRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/fitness/$statType': typeof FitnessStatTypeRoute
+  '/fitness': typeof FitnessrouteRoute
   '/academics': typeof AcademicsIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/finances': typeof FinancesIndexRoute
-  '/fitness': typeof FitnessIndexRoute
+  '/fitness/': typeof FitnessIndexRoute
   '/leaderboard': typeof LeaderboardIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/timetable': typeof TimetableIndexRoute
@@ -163,10 +224,11 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/fitness/$statType': typeof FitnessStatTypeRoute
+  '/fitness': typeof FitnessIndexRoute
   '/academics': typeof AcademicsIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/finances': typeof FinancesIndexRoute
-  '/fitness': typeof FitnessIndexRoute
   '/leaderboard': typeof LeaderboardIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/timetable': typeof TimetableIndexRoute
@@ -176,6 +238,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/fitness/$statType': typeof FitnessStatTypeRoute
+  '/fitness': typeof FitnessRouteWithChildren
+  '/fitness/__route': typeof FitnessrouteRoute
   '/academics/': typeof AcademicsIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/finances/': typeof FinancesIndexRoute
@@ -190,10 +255,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/fitness/$statType'
+    | '/fitness'
     | '/academics'
     | '/dashboard'
     | '/finances'
-    | '/fitness'
+    | '/fitness/'
     | '/leaderboard'
     | '/settings'
     | '/timetable'
@@ -201,10 +268,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/fitness/$statType'
+    | '/fitness'
     | '/academics'
     | '/dashboard'
     | '/finances'
-    | '/fitness'
     | '/leaderboard'
     | '/settings'
     | '/timetable'
@@ -212,6 +280,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/fitness/$statType'
+    | '/fitness'
+    | '/fitness/__route'
     | '/academics/'
     | '/dashboard/'
     | '/finances/'
@@ -225,10 +296,11 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FitnessStatTypeRoute: typeof FitnessStatTypeRoute
+  FitnessRoute: typeof FitnessRouteWithChildren
   AcademicsIndexRoute: typeof AcademicsIndexRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   FinancesIndexRoute: typeof FinancesIndexRoute
-  FitnessIndexRoute: typeof FitnessIndexRoute
   LeaderboardIndexRoute: typeof LeaderboardIndexRoute
   SettingsIndexRoute: typeof SettingsIndexRoute
   TimetableIndexRoute: typeof TimetableIndexRoute
@@ -237,10 +309,11 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FitnessStatTypeRoute: FitnessStatTypeRoute,
+  FitnessRoute: FitnessRouteWithChildren,
   AcademicsIndexRoute: AcademicsIndexRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   FinancesIndexRoute: FinancesIndexRoute,
-  FitnessIndexRoute: FitnessIndexRoute,
   LeaderboardIndexRoute: LeaderboardIndexRoute,
   SettingsIndexRoute: SettingsIndexRoute,
   TimetableIndexRoute: TimetableIndexRoute,
@@ -258,10 +331,11 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/fitness/$statType",
+        "/fitness",
         "/academics/",
         "/dashboard/",
         "/finances/",
-        "/fitness/",
         "/leaderboard/",
         "/settings/",
         "/timetable/",
@@ -270,6 +344,20 @@ export const routeTree = rootRoute
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/fitness/$statType": {
+      "filePath": "fitness/$statType.tsx"
+    },
+    "/fitness": {
+      "filePath": "fitness",
+      "children": [
+        "/fitness/__route",
+        "/fitness/"
+      ]
+    },
+    "/fitness/__route": {
+      "filePath": "fitness/__route.tsx",
+      "parent": "/fitness"
     },
     "/academics/": {
       "filePath": "academics/index.tsx"
@@ -281,7 +369,8 @@ export const routeTree = rootRoute
       "filePath": "finances/index.tsx"
     },
     "/fitness/": {
-      "filePath": "fitness/index.tsx"
+      "filePath": "fitness/index.tsx",
+      "parent": "/fitness"
     },
     "/leaderboard/": {
       "filePath": "leaderboard/index.tsx"
